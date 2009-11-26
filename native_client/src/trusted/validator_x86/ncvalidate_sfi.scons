@@ -1,0 +1,324 @@
+# This file is generated; do not edit.
+
+import os
+
+Import("env")
+
+configurations = {
+    'Debug' : {
+        'Append' : dict(
+            ASFLAGS = [
+                '-m32'
+            ],
+            CCFLAGS = [
+                '-Werror',
+                '-pthread',
+                '-fno-exceptions',
+                '-Wall',
+                '-m32',
+                '-fno-exceptions',
+                '-Wall',
+                '-march=pentium4',
+                '-msse2',
+                '-mfpmath=sse',
+                '-O0',
+                '-g'
+            ],
+            CPPDEFINES = [
+                'NACL_BLOCK_SHIFT=5',
+                'NACL_BLOCK_SIZE=32',
+                'NACL_LINUX=1',
+                'NACL_OSX=0',
+                'NACL_WINDOWS=0',
+                '_BSD_SOURCE=1',
+                '_POSIX_C_SOURCE=199506',
+                '_XOPEN_SOURCE=600',
+                '_GNU_SOURCE=1',
+                '__STDC_LIMIT_MACROS=1',
+                '__STDC_FORMAT_MACROS',
+                'NACL_STANDALONE=1',
+                'NACL_TARGET_SUBARCH=32',
+                'NACL_BUILD_SUBARCH=32',
+                'CHROMIUM_BUILD',
+                '_DEBUG'
+            ],
+            CPPPATH = [
+                '../../../..',
+                '${SHARED_INTERMEDIATE_DIR}'
+            ],
+            CXXFLAGS = [
+                '-fno-rtti',
+                '-fno-threadsafe-statics'
+            ],
+            LINKFLAGS = [
+                '-pthread',
+                '-m32',
+                '-rdynamic'
+            ],
+            SHLINKFLAGS = [
+                '-pthread',
+                '-m32',
+                '-rdynamic'
+            ],
+        ),
+        'FilterOut' : dict(
+        ),
+        'Replace' : dict(
+             FLOCK_LDMODULE = ['flock', '$TOP_BUILDDIR/linker.lock', '$LDMODULE'],
+             FLOCK_LINK = ['flock', '$TOP_BUILDDIR/linker.lock', '$LINK'],
+             FLOCK_SHLINK = ['flock', '$TOP_BUILDDIR/linker.lock', '$SHLINK'],
+             IMPLICIT_COMMAND_DEPENDENCIES = 0,
+             LDMODULECOM = [['$FLOCK_LDMODULE',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$LDMODULEFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+             LIBPATH = ['$LIB_DIR'],
+             LINKCOM = [['$FLOCK_LINK',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$LINKFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+             SHLINKCOM = [['$FLOCK_SHLINK',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$SHLINKFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+        ),
+        'ImportExternal' : [
+             'AS',
+             'CC',
+             'CXX',
+             'LINK',
+        ],
+        'PropagateExternal' : [
+             'AS',
+             'CC',
+             'CCACHE_DIR',
+             'CXX',
+             'DISTCC_DIR',
+             'DISTCC_HOSTS',
+             'HOME',
+             'INCLUDE_SERVER_ARGS',
+             'INCLUDE_SERVER_PORT',
+             'LINK',
+             'CHROME_BUILD_TYPE',
+             'CHROMIUM_BUILD',
+             'OFFICIAL_BUILD',
+        ],
+    },
+    'Release' : {
+        'Append' : dict(
+            ASFLAGS = [
+                '-m32'
+            ],
+            CCFLAGS = [
+                '-Werror',
+                '-pthread',
+                '-fno-exceptions',
+                '-Wall',
+                '-m32',
+                '-fno-exceptions',
+                '-Wall',
+                '-march=pentium4',
+                '-msse2',
+                '-mfpmath=sse',
+                '-O2',
+                '-fno-ident',
+                '-fdata-sections',
+                '-ffunction-sections',
+                ''
+            ],
+            CPPDEFINES = [
+                'NACL_BLOCK_SHIFT=5',
+                'NACL_BLOCK_SIZE=32',
+                'NACL_LINUX=1',
+                'NACL_OSX=0',
+                'NACL_WINDOWS=0',
+                '_BSD_SOURCE=1',
+                '_POSIX_C_SOURCE=199506',
+                '_XOPEN_SOURCE=600',
+                '_GNU_SOURCE=1',
+                '__STDC_LIMIT_MACROS=1',
+                '__STDC_FORMAT_MACROS',
+                'NACL_STANDALONE=1',
+                'NACL_TARGET_SUBARCH=32',
+                'NACL_BUILD_SUBARCH=32',
+                'CHROMIUM_BUILD',
+                'NDEBUG'
+            ],
+            CPPPATH = [
+                '../../../..',
+                '${SHARED_INTERMEDIATE_DIR}'
+            ],
+            CXXFLAGS = [
+                '-fno-rtti',
+                '-fno-threadsafe-statics'
+            ],
+            LINKFLAGS = [
+                '-pthread',
+                '-m32'
+            ],
+            SHLINKFLAGS = [
+                '-pthread',
+                '-m32'
+            ],
+        ),
+        'FilterOut' : dict(
+        ),
+        'Replace' : dict(
+             FLOCK_LDMODULE = ['flock', '$TOP_BUILDDIR/linker.lock', '$LDMODULE'],
+             FLOCK_LINK = ['flock', '$TOP_BUILDDIR/linker.lock', '$LINK'],
+             FLOCK_SHLINK = ['flock', '$TOP_BUILDDIR/linker.lock', '$SHLINK'],
+             IMPLICIT_COMMAND_DEPENDENCIES = 0,
+             LDMODULECOM = [['$FLOCK_LDMODULE',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$LDMODULEFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+             LIBPATH = ['$LIB_DIR'],
+             LINKCOM = [['$FLOCK_LINK',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$LINKFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+             SHLINKCOM = [['$FLOCK_SHLINK',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$SHLINKFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+        ),
+        'ImportExternal' : [
+             'AS',
+             'CC',
+             'CXX',
+             'LINK',
+        ],
+        'PropagateExternal' : [
+             'AS',
+             'CC',
+             'CCACHE_DIR',
+             'CXX',
+             'DISTCC_DIR',
+             'DISTCC_HOSTS',
+             'HOME',
+             'INCLUDE_SERVER_ARGS',
+             'INCLUDE_SERVER_PORT',
+             'LINK',
+             'CHROME_BUILD_TYPE',
+             'CHROMIUM_BUILD',
+             'OFFICIAL_BUILD',
+        ],
+    },
+}
+
+env = env.Clone(COMPONENT_NAME='validator_x86',
+                TARGET_NAME='ncvalidate_sfi')
+
+config = configurations[env['CONFIG_NAME']]
+env.Append(**config['Append'])
+env.FilterOut(**config['FilterOut'])
+env.Replace(**config['Replace'])
+for _var in config['ImportExternal']:
+  if _var in ARGUMENTS:
+    env[_var] = ARGUMENTS[_var]
+  elif _var in os.environ:
+    env[_var] = os.environ[_var]
+for _var in config['PropagateExternal']:
+  if _var in ARGUMENTS:
+    env[_var] = ARGUMENTS[_var]
+  elif _var in os.environ:
+    env['ENV'][_var] = os.environ[_var]
+
+if ARGUMENTS.get('COVERAGE') not in (None, '0'):
+  env.Append(
+      CCFLAGS = [
+          '-fprofile-arcs',
+          '-ftest-coverage'
+      ],
+      LINKFLAGS = [
+          '-fprofile-arcs'
+      ],
+      SHLINKFLAGS = [
+          '-fprofile-arcs'
+      ],
+  )
+
+if ARGUMENTS.get('PROFILE') not in (None, '0'):
+  env.Append(
+      CCFLAGS = [
+          '-pg',
+          '-g'
+      ],
+      LINKFLAGS = [
+          '-pg'
+      ],
+      SHLINKFLAGS = [
+          '-pg'
+      ],
+  )
+
+if ARGUMENTS.get('SYMBOLS') not in (None, '0'):
+  env.Append(
+      CCFLAGS = [
+          '-g'
+      ],
+  )
+
+input_files = [
+    'ncvalidate_iter.c',
+    'nc_opcode_histogram.c',
+    'nc_cpu_checks.c',
+    'nc_illegal.c',
+    'nc_protect_base.c',
+    'nc_store_protect.c',
+    'ncvalidate_utils.c',
+    'nc_jumps.c',
+    'ncval_driver.c',
+]
+
+target_files = []
+prerequisites = []
+
+_result = []
+for infile in input_files:
+  if env.compilable(infile):
+    if type(infile) == type('') and not os.path.isabs(env.subst(infile)):
+      base, ext = os.path.splitext(infile)
+      object = '${OBJ_DIR}/${COMPONENT_NAME}/' + base
+      infile = env.StaticObject(object, '$SRC_DIR/native_client/src/trusted/validator_x86/' + infile)[0]
+    else:
+      infile = env.StaticObject(infile)[0]
+  _result.append(infile)
+input_files = _result
+
+_outputs = env.GypStaticLibrary('ncvalidate_sfi', input_files)
+target_files.extend(_outputs)
+
+gyp_target = env.Alias('ncvalidate_sfi', target_files)
+env.Requires(gyp_target, prerequisites)
+Return("gyp_target")
