@@ -1,0 +1,376 @@
+# This file is generated; do not edit.
+
+import os
+
+Import("env")
+
+configurations = {
+    'Debug' : {
+        'Append' : dict(
+            ASFLAGS = [
+                '-m32'
+            ],
+            CCFLAGS = [
+                '-Werror',
+                '-pthread',
+                '-fno-exceptions',
+                '-Wall',
+                '-m32',
+                '-fno-exceptions',
+                '-Wall',
+                '-march=pentium4',
+                '-msse2',
+                '-mfpmath=sse',
+                '-O0',
+                '-g'
+            ],
+            CPPDEFINES = [
+                'NACL_BLOCK_SHIFT=5',
+                'NACL_BLOCK_SIZE=32',
+                'NACL_LINUX=1',
+                'NACL_OSX=0',
+                'NACL_WINDOWS=0',
+                '_BSD_SOURCE=1',
+                '_POSIX_C_SOURCE=199506',
+                '_XOPEN_SOURCE=600',
+                '_GNU_SOURCE=1',
+                '__STDC_LIMIT_MACROS=1',
+                '__STDC_FORMAT_MACROS',
+                'NACL_STANDALONE=1',
+                'NACL_TARGET_SUBARCH=32',
+                'NACL_BUILD_SUBARCH=32',
+                'CHROMIUM_BUILD',
+                '_DEBUG'
+            ],
+            CPPPATH = [
+                '../..'
+            ],
+            CXXFLAGS = [
+                '-fno-rtti',
+                '-fno-threadsafe-statics'
+            ],
+            LINKFLAGS = [
+                '-pthread',
+                '-m32',
+                '-rdynamic'
+            ],
+            SHLINKFLAGS = [
+                '-pthread',
+                '-m32',
+                '-rdynamic'
+            ],
+            LIBS = [
+                'google_nacl_npruntime',
+                'libgoogle_nacl_imc_c',
+                'platform',
+                'nonnacl_srpc',
+                'utils',
+                'nrd_xfer',
+                'sel_ldr_launcher',
+                'nonnacl_util',
+                'nonnacl_util_c',
+                'platform_qual_lib',
+                'npGoogleNaClPlugin',
+                'sel',
+                'gio',
+                'container',
+                'expiration',
+                'nacl_xdr',
+                'nchelper',
+                'ncopcode_utils',
+                'ncvalidate',
+                'ncvalidate_sfi',
+                'ncdis_util'
+            ],
+        ),
+        'FilterOut' : dict(
+        ),
+        'Replace' : dict(
+             FLOCK_LDMODULE = ['flock', '$TOP_BUILDDIR/linker.lock', '$LDMODULE'],
+             FLOCK_LINK = ['flock', '$TOP_BUILDDIR/linker.lock', '$LINK'],
+             FLOCK_SHLINK = ['flock', '$TOP_BUILDDIR/linker.lock', '$SHLINK'],
+             IMPLICIT_COMMAND_DEPENDENCIES = 0,
+             LDMODULECOM = [['$FLOCK_LDMODULE',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$LDMODULEFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+             LIBPATH = ['$LIB_DIR'],
+             LINKCOM = [['$FLOCK_LINK',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$LINKFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+             SHLINKCOM = [['$FLOCK_SHLINK',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$SHLINKFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+        ),
+        'ImportExternal' : [
+             'AS',
+             'CC',
+             'CXX',
+             'LINK',
+        ],
+        'PropagateExternal' : [
+             'AS',
+             'CC',
+             'CCACHE_DIR',
+             'CXX',
+             'DISTCC_DIR',
+             'DISTCC_HOSTS',
+             'HOME',
+             'INCLUDE_SERVER_ARGS',
+             'INCLUDE_SERVER_PORT',
+             'LINK',
+             'CHROME_BUILD_TYPE',
+             'CHROMIUM_BUILD',
+             'OFFICIAL_BUILD',
+        ],
+    },
+    'Release' : {
+        'Append' : dict(
+            ASFLAGS = [
+                '-m32'
+            ],
+            CCFLAGS = [
+                '-Werror',
+                '-pthread',
+                '-fno-exceptions',
+                '-Wall',
+                '-m32',
+                '-fno-exceptions',
+                '-Wall',
+                '-march=pentium4',
+                '-msse2',
+                '-mfpmath=sse',
+                '-O2',
+                '-fno-ident',
+                '-fdata-sections',
+                '-ffunction-sections',
+                ''
+            ],
+            CPPDEFINES = [
+                'NACL_BLOCK_SHIFT=5',
+                'NACL_BLOCK_SIZE=32',
+                'NACL_LINUX=1',
+                'NACL_OSX=0',
+                'NACL_WINDOWS=0',
+                '_BSD_SOURCE=1',
+                '_POSIX_C_SOURCE=199506',
+                '_XOPEN_SOURCE=600',
+                '_GNU_SOURCE=1',
+                '__STDC_LIMIT_MACROS=1',
+                '__STDC_FORMAT_MACROS',
+                'NACL_STANDALONE=1',
+                'NACL_TARGET_SUBARCH=32',
+                'NACL_BUILD_SUBARCH=32',
+                'CHROMIUM_BUILD',
+                'NDEBUG'
+            ],
+            CPPPATH = [
+                '../..'
+            ],
+            CXXFLAGS = [
+                '-fno-rtti',
+                '-fno-threadsafe-statics'
+            ],
+            LINKFLAGS = [
+                '-pthread',
+                '-m32'
+            ],
+            SHLINKFLAGS = [
+                '-pthread',
+                '-m32'
+            ],
+            LIBS = [
+                'google_nacl_npruntime',
+                'libgoogle_nacl_imc_c',
+                'platform',
+                'nonnacl_srpc',
+                'utils',
+                'nrd_xfer',
+                'sel_ldr_launcher',
+                'nonnacl_util',
+                'nonnacl_util_c',
+                'platform_qual_lib',
+                'npGoogleNaClPlugin',
+                'sel',
+                'gio',
+                'container',
+                'expiration',
+                'nacl_xdr',
+                'nchelper',
+                'ncopcode_utils',
+                'ncvalidate',
+                'ncvalidate_sfi',
+                'ncdis_util'
+            ],
+        ),
+        'FilterOut' : dict(
+        ),
+        'Replace' : dict(
+             FLOCK_LDMODULE = ['flock', '$TOP_BUILDDIR/linker.lock', '$LDMODULE'],
+             FLOCK_LINK = ['flock', '$TOP_BUILDDIR/linker.lock', '$LINK'],
+             FLOCK_SHLINK = ['flock', '$TOP_BUILDDIR/linker.lock', '$SHLINK'],
+             IMPLICIT_COMMAND_DEPENDENCIES = 0,
+             LDMODULECOM = [['$FLOCK_LDMODULE',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$LDMODULEFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+             LIBPATH = ['$LIB_DIR'],
+             LINKCOM = [['$FLOCK_LINK',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$LINKFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+             SHLINKCOM = [['$FLOCK_SHLINK',
+  '-o',
+  '$TARGET',
+  '$_LIBDIRFLAGS',
+  '$SHLINKFLAGS',
+  '$SOURCES',
+  '-Wl,--start-group',
+  '$_LIBFLAGS',
+  '-Wl,--end-group']],
+        ),
+        'ImportExternal' : [
+             'AS',
+             'CC',
+             'CXX',
+             'LINK',
+        ],
+        'PropagateExternal' : [
+             'AS',
+             'CC',
+             'CCACHE_DIR',
+             'CXX',
+             'DISTCC_DIR',
+             'DISTCC_HOSTS',
+             'HOME',
+             'INCLUDE_SERVER_ARGS',
+             'INCLUDE_SERVER_PORT',
+             'LINK',
+             'CHROME_BUILD_TYPE',
+             'CHROMIUM_BUILD',
+             'OFFICIAL_BUILD',
+        ],
+    },
+}
+
+env = env.Clone(COMPONENT_NAME='all',
+                TARGET_NAME='pull_in_all')
+
+config = configurations[env['CONFIG_NAME']]
+env.Append(**config['Append'])
+env.FilterOut(**config['FilterOut'])
+env.Replace(**config['Replace'])
+for _var in config['ImportExternal']:
+  if _var in ARGUMENTS:
+    env[_var] = ARGUMENTS[_var]
+  elif _var in os.environ:
+    env[_var] = os.environ[_var]
+for _var in config['PropagateExternal']:
+  if _var in ARGUMENTS:
+    env[_var] = ARGUMENTS[_var]
+  elif _var in os.environ:
+    env['ENV'][_var] = os.environ[_var]
+
+if ARGUMENTS.get('COVERAGE') not in (None, '0'):
+  env.Append(
+      CCFLAGS = [
+          '-fprofile-arcs',
+          '-ftest-coverage'
+      ],
+      LINKFLAGS = [
+          '-fprofile-arcs'
+      ],
+      SHLINKFLAGS = [
+          '-fprofile-arcs'
+      ],
+  )
+
+if ARGUMENTS.get('PROFILE') not in (None, '0'):
+  env.Append(
+      CCFLAGS = [
+          '-pg',
+          '-g'
+      ],
+      LINKFLAGS = [
+          '-pg'
+      ],
+      SHLINKFLAGS = [
+          '-pg'
+      ],
+  )
+
+if ARGUMENTS.get('SYMBOLS') not in (None, '0'):
+  env.Append(
+      CCFLAGS = [
+          '-g'
+      ],
+  )
+
+input_files = []
+
+target_files = []
+prerequisites = []
+
+target_files.extend(input_files)
+
+gyp_target = env.Alias('pull_in_all', target_files)
+env.Requires(gyp_target, [
+    Alias('google_nacl_npruntime'),
+    Alias('libgoogle_nacl_imc_c'),
+    Alias('platform'),
+    Alias('nonnacl_srpc'),
+    Alias('utils'),
+    Alias('nrd_xfer'),
+    Alias('sel_ldr_launcher'),
+    Alias('nonnacl_util'),
+    Alias('nonnacl_util_c'),
+    Alias('platform_qual_lib'),
+    Alias('npGoogleNaClPlugin'),
+    Alias('sel'),
+    Alias('gio'),
+    Alias('container'),
+    Alias('expiration'),
+    Alias('nacl_xdr'),
+    Alias('tramp_gen'),
+    Alias('springboard_gen'),
+    Alias('sel_ldr'),
+    Alias('ncdecode_table'),
+    Alias('nchelper'),
+    Alias('ncopcode_utils'),
+    Alias('ncdecode_tablegen'),
+    Alias('ncvalidate'),
+    Alias('ncvalidate_sfi'),
+    Alias('ncdis_util'),
+    Alias('service_runtime_tests'),
+    Alias('mmap_test'),
+    Alias('nacl_sync_cond_test')
+])
+env.Requires(gyp_target, prerequisites)
+Return("gyp_target")
