@@ -258,6 +258,7 @@ extern int imc_accept(int desc);
  *  but is itself not transferable.
  *  appropriately.
  */
+
 extern int imc_connect(int desc);
 /**
  *  @nacl

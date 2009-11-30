@@ -68,19 +68,24 @@ def ProcessFileList(flist):
 # enddef
 
 def ProcessDir(srcdir, dstdir):
+  print "srcdir = ",srcdir, " dstdir = ", dstdir
   if not os.path.isdir(srcdir):
+    print "srcdir = ", srcdir, " isnot a dir"
     return
   # endif
   if not os.path.isdir(dstdir):
+    print "creating dstdir = ",dstdir
     os.makedirs(dstdir)
   # endif
   for fn in os.listdir(srcdir):
     srcpath = os.path.join(srcdir, fn)
     dstpath = os.path.join(dstdir, fn)
     if os.path.isfile(srcpath) and fn.endswith('.h'):
+      print "processing %s to %s" %(srcpath, dstpath)
       ProcessStreams(open(srcpath),
                      open(dstpath, 'w'));
     elif os.path.isdir(srcpath):
+      print "processing %s to %s (dirs)" %(srcpath, dstpath)
       ProcessDir(srcpath, dstpath)
     # endif
   # endfor
