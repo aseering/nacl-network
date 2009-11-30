@@ -1052,6 +1052,8 @@ nacl_extra_sdk_env.Append(
       'src/shared/srpc/nacl.scons',
       'src/untrusted/nacl/nacl.scons',
       'src/untrusted/pthread/nacl.scons',
+      #@nizam: add the following for our socket library
+      'src/untrusted/socket/nacl.scons',
       'src/untrusted/stubs/nacl.scons',
       'src/untrusted/unimpl/nacl.scons',
       ####  ALPHABETICALLY SORTED ####
