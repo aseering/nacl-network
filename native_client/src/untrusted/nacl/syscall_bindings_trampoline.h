@@ -38,7 +38,10 @@ extern "C" {
 
 #include <sys/types.h>
 #include "native_client/src/trusted/service_runtime/include/bits/nacl_syscalls.h"
+//nizam: incude this file only for socket_len
+#include "native_client/src/trusted/service_runtime/include/bits/socket.h"
 #include "native_client/src/trusted/service_runtime/nacl_config.h"
+
 
 struct NaClImcMsgHdr;
 struct stat;
@@ -164,6 +167,35 @@ typedef int (*TYPE_nacl_tls_init) (void *tdb, int size);
 
 typedef int (*TYPE_nacl_srpc_get_fd) (void);
 
+/* ============================================================ */
+/* socket @author nizam */
+/* ============================================================ */
+
+typedef int (*TYPE_nacl_accept) (int fd, struct sockaddr* addr, socklen_t *addr_len);
+typedef int (*TYPE_nacl_bind) (int fd, const struct sockaddr * addr, socklen_t len);
+typedef int (*TYPE_nacl_connect) (int fd, const struct sockaddr* addr, socklen_t len);
+typedef int (*TYPE_nacl_getpeername) (int fd, struct sockaddr* addr, socklen_t *len);
+typedef int (*TYPE_nacl_getsockname) (int fd, struct sockaddr* addr, socklen_t *len);
+typedef int (*TYPE_nacl_getsockopt) (int fd, int level, int optname,
+	       void *optval,
+	       socklen_t *optlen);
+typedef int (*TYPE_nacl_listen) (int fd, int n);
+typedef int (*TYPE_nacl_recv) (int fd, void *buf, size_t n, int flags);
+typedef int (*TYPE_nacl_recvfrom) (int fd, void *buf, size_t n,
+		 int flags, struct sockaddr* addr,
+		 socklen_t *addr_len);
+typedef int (*TYPE_nacl_recvmsg) (int fd, struct msghdr *message, int flags);
+typedef int (*TYPE_nacl_send) (int fd, const void *buf, size_t n, int flags);
+typedef int (*TYPE_nacl_sendmsg) (int fd, const struct msghdr *message,
+		int flags);
+typedef int (*TYPE_nacl_sendto) (int fd, const void *buf, size_t n,
+	       int flags, const struct sockaddr* addr,
+	       socklen_t addr_len);
+typedef int (*TYPE_nacl_setsockopt) (int fd, int level, int optname,
+	       const void *optval, socklen_t optlen);
+typedef int (*TYPE_nacl_shutdown) (int fd, int how);
+typedef int (*TYPE_nacl_socket) (int domain, int type, int protocol);
+typedef int (*TYPE_nacl_socketpair) (int domain, int type, int protocol, int fds[2]);
 #if __cplusplus
 }
 #endif
