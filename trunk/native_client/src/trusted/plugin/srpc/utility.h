@@ -38,7 +38,8 @@
 #include "native_client/src/include/portability.h"
 #include "native_client/src/shared/platform/nacl_threads.h"
 
-#define SRPC_PLUGIN_DEBUG 0
+//nizam: I changed this from 0 to 1 to enable debugging
+#define SRPC_PLUGIN_DEBUG 1
 
 #ifndef SRPC_PLUGIN_DEBUG
 #define SRPC_PLUGIN_DEBUG 1

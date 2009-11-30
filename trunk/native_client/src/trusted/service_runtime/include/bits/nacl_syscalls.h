@@ -108,7 +108,25 @@
 #define NACL_sys_sem_wait               101
 #define NACL_sys_sem_post               102
 #define NACL_sys_sem_get_value          103
+//nizam: following are the syscall codes for socket lib
+#define NACL_sys_accept					110
+#define NACL_sys_bind					111
+#define NACL_sys_connect				112
+#define NACL_sys_getpeername			113
+#define NACL_sys_getsockname			114
+#define NACL_sys_getsockopt				115
+#define NACL_sys_listen					116
+#define NACL_sys_recv					117
+#define NACL_sys_recvfrom				118
+#define NACL_sys_recvmsg				119
+#define NACL_sys_send					120
+#define NACL_sys_sendmsg				121
+#define NACL_sys_sendto					122
+#define NACL_sys_setsockopt				123
+#define NACL_sys_shutdown				124
+#define NACL_sys_socket					125
+#define NACL_sys_socketpair				126
 
-#define NACL_MAX_SYSCALLS               110
+#define NACL_MAX_SYSCALLS               130
 
 #endif /* NATIVE_CLIENT_SERVICE_RUNTIME_INCLUDE_BITS_NACL_SYSCALLS_H_ */

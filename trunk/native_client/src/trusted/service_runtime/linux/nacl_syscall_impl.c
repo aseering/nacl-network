@@ -41,6 +41,7 @@
 #include <sys/mman.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/socket.h>
 
 #include "native_client/src/include/portability.h"
 #include "native_client/src/include/nacl_platform.h"
@@ -598,4 +599,112 @@ int32_t NaClSysSysconf(struct NaClAppThread *natp,
 cleanup:
   NaClSysCommonThreadSyscallLeave(natp);
   return retval;
+}
+
+//@author: nizam following are the wrappers around socket lib functions
+//that are outside the sandbox
+int32_t NaClSysAccept(struct NaClAppThread  *natp, int fd, struct sockaddr* addr,
+		   socklen_t *addr_len) {
+	UNREFERENCED_PARAMETER(natp);
+	return accept(fd, addr, addr_len);
+}
+
+int32_t NaClSysBind(struct NaClAppThread  *natp, int fd,
+		const struct sockaddr * addr, socklen_t len) {
+	UNREFERENCED_PARAMETER(natp);
+	return bind(fd, addr, len);
+}
+
+int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
+		const struct sockaddr* addr, socklen_t len) {
+	UNREFERENCED_PARAMETER(natp);
+	return connect(fd, addr, len);
+}
+
+int32_t NaClSysGetpeername(struct NaClAppThread  *natp, int fd,
+		struct sockaddr* addr, socklen_t *len) {
+	UNREFERENCED_PARAMETER(natp);
+	return getpeername(fd, addr, len);
+}
+
+int32_t NaClSysGetsockname(struct NaClAppThread  *natp, int fd,
+		struct sockaddr* addr, socklen_t *len) {
+	UNREFERENCED_PARAMETER(natp);
+	return getsockname(fd, addr, len);
+}
+
+int32_t NaClSysGetsockopt(struct NaClAppThread  *natp, int fd, int level,
+		   int optname,
+	       void *optval,
+	       socklen_t *optlen) {
+	UNREFERENCED_PARAMETER(natp);
+	return getsockopt(fd, level, optname, optval, optlen);
+}
+
+int32_t NaClSysListen(struct NaClAppThread  *natp, int fd, int n) {
+	UNREFERENCED_PARAMETER(natp);
+	return listen(fd, n);
+}
+
+int32_t NaClSysRecv(struct NaClAppThread  *natp, int fd, void *buf,
+		size_t n, int flags) {
+	UNREFERENCED_PARAMETER(natp);
+	return recv(fd, buf, n, flags);
+}
+
+int32_t NaClSysRecvfrom(struct NaClAppThread  *natp, int fd, void *buf, size_t n,
+		 int flags, struct sockaddr* addr,
+		 socklen_t *addr_len) {
+	UNREFERENCED_PARAMETER(natp);
+	return recvfrom(fd, buf, n, flags, addr, addr_len);
+}
+
+int32_t NaClSysRecvmsg(struct NaClAppThread  *natp, int fd,
+		struct msghdr *message, int flags) {
+	UNREFERENCED_PARAMETER(natp);
+	return recvmsg(fd, message, flags);
+}
+
+int32_t NaClSysSend(struct NaClAppThread  *natp, int fd,
+		const void *buf, size_t n, int flags) {
+	UNREFERENCED_PARAMETER(natp);
+	return send(fd, buf, n, flags);
+}
+
+int32_t NaClSysSendMsg(struct NaClAppThread  *natp, int fd,
+		const struct msghdr *message,
+		int flags) {
+	UNREFERENCED_PARAMETER(natp);
+	return sendmsg(fd, message, flags);
+}
+
+int32_t NaClSysSendto(struct NaClAppThread  *natp, int fd,
+		   const void *buf, size_t n,
+	       int flags, const struct sockaddr* addr,
+	       socklen_t addr_len) {
+	UNREFERENCED_PARAMETER(natp);
+	return sendto(fd, buf, n, flags, addr, addr_len);
+}
+
+int32_t NaClSysSetsockopt(struct NaClAppThread  *natp, int fd, int level,
+		int optname, const void *optval, socklen_t optlen) {
+	UNREFERENCED_PARAMETER(natp);
+	return setsockopt(fd, level, optname, optval, optlen);
+}
+
+int32_t NaClSysShutdown(struct NaClAppThread  *natp, int fd, int how) {
+	UNREFERENCED_PARAMETER(natp);
+	return shutdown(fd, how);
+}
+
+int32_t NaClSysSocket(struct NaClAppThread  *natp, int domain, int type,
+		int protocol) {
+	UNREFERENCED_PARAMETER(natp);
+	return socket(domain, type, protocol);
+}
+
+int32_t NaClSysSocketpair(struct NaClAppThread  *natp, int domain, int type,
+		int protocol, int fds[2]) {
+	UNREFERENCED_PARAMETER(natp);
+	return socketpair(domain, type, protocol, fds);
 }

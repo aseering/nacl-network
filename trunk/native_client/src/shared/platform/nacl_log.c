@@ -40,7 +40,8 @@
 #include <stdarg.h>
 #include <limits.h>
 
-#define NON_THREAD_SAFE_DETAIL_CHECK  1
+//@ nizam: I commented this to make nacl output info
+//#define NON_THREAD_SAFE_DETAIL_CHECK  1
 /*
  * If set, check detail_level without grabbing a mutex.  This makes
  * logging much cheaper, but implies that the verbosity level should

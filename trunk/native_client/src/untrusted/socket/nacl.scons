@@ -1,0 +1,64 @@
+# Copyright 2008, Google Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+Import('env')
+
+# we have some empty source files
+env.FilterOut(CCFLAGS=['-pedantic'])
+
+# Sources are split into essentially one function per file to be in
+# alignment with the linker, which resolves symbols by including entire
+# object files.  Placing multiple definitions in one file may result in
+# object code bloat or possibly multiple definitions.
+
+sources_c = [
+'accept.c',
+'bind.c',
+'connect.c',
+'getpeername.c',
+'getsockname.c',
+'getsockopt.c',
+'listen.c',
+'recv.c',
+'recvfrom.c',
+'recvmsg.c',
+'send.c',
+'sendmsg.c',
+'sendto.c',
+'setsockopt.c',
+'shutdown.c',
+'socket.c',
+'socketpair.c',    
+    ]
+
+
+env.ComponentLibrary('libsock', sources_c)
+print "socket/nacl.scons is processed"
+env.AddLibraryToSdk(['libsock'])
