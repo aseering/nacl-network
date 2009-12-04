@@ -863,8 +863,8 @@ nacl_env = pre_base_env.Clone(
 )
 
 # limit the majority of test to x86 for now
-if (nacl_env['BUILD_ARCHITECTURE'] == 'x86' and
-    nacl_env['TARGET_ARCHITECTURE'] == 'x86'):
+# nizam : always add the tests
+if (True):
   nacl_env.Append(
       CCFLAGS = ['-mfpmath=sse',
                  '-msse',
@@ -882,7 +882,6 @@ if (nacl_env['BUILD_ARCHITECTURE'] == 'x86' and
 #                 '${NACL_SDK_INCLUDE}/c++/4.2.2/nacl',
                  ]
       )
-
   nacl_env.Append(
       BUILD_SCONSCRIPTS = [
           ####  ALPHABETICALLY SORTED ####
@@ -904,6 +903,7 @@ if (nacl_env['BUILD_ARCHITECTURE'] == 'x86' and
           #nizam: socket test:
           'tests/socket/nacl.scons',
           'tests/donahoo/nacl.scons',
+          ############################
           'tests/srpc/nacl.scons',
           'tests/srpc_hw/nacl.scons',
           'tests/srpc_without_pthread/nacl.scons',
