@@ -98,6 +98,7 @@ int main(const int argc, const char *argv[]) {
 
   if (passed) {
     printf("All tests PASSED\n");
+    printf("yessss\n");
     exit(0);
   } else {
     printf("One or more tests FAILED\n");
