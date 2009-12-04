@@ -1,0 +1,6 @@
+Import('env')
+
+env.ComponentProgram('socket.nexe', 'socket.c',
+                     EXTRA_LIBS=['sock', 'm'])
+
+env.Publish('socket.nexe', 'run', ['socket.html'])
