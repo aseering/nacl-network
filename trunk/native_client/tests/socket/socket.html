@@ -1,0 +1,23 @@
+<html>
+<head>
+<script type="text/javascript">
+var log = function(msg) {
+	document.getElementById('log').innerHTML += msg; 
+}
+var Init = function() {
+	socket = document.getElementById('socket');
+	if (socket.__moduleReady) {
+		log("successfully loaded the plugin object");
+	} else {
+		log("failed to load the plugin object!");
+	}
+}
+</script>
+</head>
+<body onload="Init();">
+<embed type="application/x-nacl-srpc" id="socket"
+            width="0" height="0" src="socket.nexe" />
+<div id="log">
+</div>            
+</body>
+</html>

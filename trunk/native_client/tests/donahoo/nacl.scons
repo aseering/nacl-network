@@ -1,0 +1,6 @@
+Import('env')
+
+env.ComponentProgram('TCPEchoClient.nexe', 'TCPEchoClient.c', 'DieWithError.c',
+                     EXTRA_LIBS=['sock', 'm'])
+
+env.Publish('TCPEchoClient.nexe', 'run', ['echo.html'])
