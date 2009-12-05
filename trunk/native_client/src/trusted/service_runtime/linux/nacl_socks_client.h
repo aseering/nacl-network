@@ -9,5 +9,5 @@ void MakeNaClHashReq(char *buf, unsigned int hash[20], int nonce);
 int ParseNaClHashResp(const char* buf, int* udpPorts, int* tcpPorts, int* global, int *nonce);
 
 /*Given the data of nexe, create a hash*/
-void MakeNaclHash(const void* nexeData, unsigned int hash[20]);
+void MakeNaClHash(const void* nexeData, unsigned int hash[20]);
 #endif
