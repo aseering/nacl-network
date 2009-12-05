@@ -28,7 +28,8 @@ static const char rcsid[] = "$BINDId: inet_pton.c,v 1.7 1999/10/13 16:39:28 vixi
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
-
+#define internal_function
+# define libc_hidden_def(name)
 /*
  * WARNING: Don't even consider trying to compile this on a system where
  * sizeof(int) < 4.  sizeof(int) > 4 is fine; all the world's not a VAX.

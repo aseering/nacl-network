@@ -84,6 +84,7 @@ static const char rcsid[] = "$BINDId: inet_addr.c,v 8.11 1999/10/13 16:39:25 vix
 # include <limits.h>
 # include <errno.h>
 #endif
+extern int __inet_aton(const char *cp, struct in_addr *addr);
 
 /*
  * Ascii internet address interpretation routine.
@@ -221,6 +222,6 @@ ret_0:
 #endif
 	return (0);
 }
-weak_alias (__inet_aton, inet_aton)
-libc_hidden_def (__inet_aton)
-libc_hidden_weak (inet_aton)
+/*weak_alias (__inet_aton, inet_aton)*/
+/*libc_hidden_def (__inet_aton)*/
+/*libc_hidden_weak (inet_aton)*/
