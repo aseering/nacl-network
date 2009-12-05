@@ -63,7 +63,7 @@
 # include <sys/types.h>
 #endif
 #include <sys/cdefs.h>
-
+typedef unsigned int u_int16_t;
 /*%
  * Revision information.  This is the release date in YYYYMMDD format.
  * It can change every day so the right thing to do with it is use it
@@ -139,7 +139,7 @@ typedef	struct __ns_rr {
 	char		name[NS_MAXDNAME];
 	u_int16_t	type;
 	u_int16_t	rr_class;
-	u_int32_t	ttl;
+	unsigned long	ttl;
 	u_int16_t	rdlength;
 	const u_char *	rdata;
 } ns_rr;
@@ -487,7 +487,7 @@ int		ns_sprintrrf (const u_char *, size_t, const char *,
 			      char *, size_t) __THROW;
 int		ns_format_ttl (u_long, char *, size_t) __THROW;
 int		ns_parse_ttl (const char *, u_long *) __THROW;
-u_int32_t	ns_datetosecs (const char *cp, int *errp) __THROW;
+unsigned long	ns_datetosecs (const char *cp, int *errp) __THROW;
 int		ns_name_ntol (const u_char *, u_char *, size_t) __THROW;
 int		ns_name_ntop (const u_char *, char *, size_t) __THROW;
 int		ns_name_pton (const char *, u_char *, size_t) __THROW;
