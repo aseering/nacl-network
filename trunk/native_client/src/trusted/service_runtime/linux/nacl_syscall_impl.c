@@ -606,30 +606,50 @@ cleanup:
 int32_t NaClSysAccept(struct NaClAppThread  *natp, int fd, struct sockaddr* addr,
 		   socklen_t *addr_len) {
 	UNREFERENCED_PARAMETER(natp);
+	int r;
+	if ((r = NaClValidateIp(natp, addr)) != 0) {
+	  return r;
+	}
 	return accept(fd, addr, addr_len);
 }
 
 int32_t NaClSysBind(struct NaClAppThread  *natp, int fd,
 		const struct sockaddr * addr, socklen_t len) {
 	UNREFERENCED_PARAMETER(natp);
+	int r;
+	if ((r = NaClValidateIp(natp, addr)) != 0) {
+	  return r;
+	}
 	return bind(fd, addr, len);
 }
 
 int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 		const struct sockaddr* addr, socklen_t len) {
 	UNREFERENCED_PARAMETER(natp);
+	int r;
+	if ((r = NaClValidateIp(natp, addr)) != 0) {
+	  return r;
+	}
 	return connect(fd, addr, len);
 }
 
 int32_t NaClSysGetpeername(struct NaClAppThread  *natp, int fd,
 		struct sockaddr* addr, socklen_t *len) {
 	UNREFERENCED_PARAMETER(natp);
+	int r;
+	if ((r = NaClValidateIp(natp, addr)) != 0) {
+	  return r;
+	}
 	return getpeername(fd, addr, len);
 }
 
 int32_t NaClSysGetsockname(struct NaClAppThread  *natp, int fd,
 		struct sockaddr* addr, socklen_t *len) {
 	UNREFERENCED_PARAMETER(natp);
+	int r;
+	if ((r = NaClValidateIp(natp, addr)) != 0) {
+	  return r;
+	}
 	return getsockname(fd, addr, len);
 }
 
@@ -656,6 +676,10 @@ int32_t NaClSysRecvfrom(struct NaClAppThread  *natp, int fd, void *buf, size_t n
 		 int flags, struct sockaddr* addr,
 		 socklen_t *addr_len) {
 	UNREFERENCED_PARAMETER(natp);
+	int r;
+	if ((r = NaClValidateIp(natp, addr)) != 0) {
+	  return r;
+	}
 	return recvfrom(fd, buf, n, flags, addr, addr_len);
 }
 
@@ -683,6 +707,10 @@ int32_t NaClSysSendto(struct NaClAppThread  *natp, int fd,
 	       int flags, const struct sockaddr* addr,
 	       socklen_t addr_len) {
 	UNREFERENCED_PARAMETER(natp);
+	int r;
+	if ((r = NaClValidateIp(natp, addr)) != 0) {
+	  return r;
+	}
 	return sendto(fd, buf, n, flags, addr, addr_len);
 }
 
