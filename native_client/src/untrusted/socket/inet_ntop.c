@@ -14,7 +14,10 @@
  * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
  * SOFTWARE.
  */
-
+#ifndef internal_function
+#define internal_function
+#endif
+# define libc_hidden_def(name)
 typedef unsigned short u_int16_t;
 
 #if defined(LIBC_SCCS) && !defined(lint)
@@ -43,6 +46,7 @@ static const char rcsid[] = "$BINDId: inet_ntop.c,v 1.8 1999/10/13 16:39:28 vixi
  * WARNING: Don't even consider trying to compile this on a system where
  * sizeof(int) < 4.  sizeof(int) > 4 is fine; all the world's not a VAX.
  */
+#define internal_function
 
 static const char *inet_ntop4 (const u_char *src, char *dst, socklen_t size)
      internal_function;
@@ -91,7 +95,7 @@ libc_hidden_def (inet_ntop)
 static const char *
 internal_function
 inet_ntop4(src, dst, size)
-	const u_char *src;
+	const unsigned char *src;
 	char *dst;
 	socklen_t size;
 {
