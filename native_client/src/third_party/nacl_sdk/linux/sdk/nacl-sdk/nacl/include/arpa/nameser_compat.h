@@ -36,7 +36,7 @@
 
 #define	__BIND		19950621	/*%< (DEAD) interface version stamp. */
 
-#include <endian.h>
+#include <machine/endian.h>
 
 /*%
  * Structure for query header.  The order of the fields is machine- and
