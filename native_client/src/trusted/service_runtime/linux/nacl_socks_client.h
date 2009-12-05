@@ -9,5 +9,15 @@ void MakeNaClHashReq(char *buf, unsigned int hash[20], int nonce);
 int ParseNaClHashResp(const char* buf, int* udpPorts, int* tcpPorts, int* global, int *nonce);
 
 /*Given the data of nexe, create a hash*/
-void MakeNaClHash(const void* nexeData, unsigned int hash[20]);
+/*"hash" must point to a 20-bytes buffer into which the hash will be written.*/
+/*returns 0 on success nonzero on error*/
+int MakeNaClHash(const char* nexe_file, unsigned char *hash);
+
+
+struct NaClRemoteServerPorts {
+  int ip;
+  unsigned char[8192] udp_ports;
+  unsigned char[8192] tcp_ports;
+};
+
 #endif

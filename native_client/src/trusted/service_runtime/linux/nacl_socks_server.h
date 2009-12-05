@@ -6,5 +6,5 @@ int ParseNaClHashReq(const char* buf, int* nonce, unsigned int hash[20]);
 /*make a response*/
 void MakeNaClHashResp(char* buf, const int* tcpports, const int* udpports, int nonce, int global, int ok);
 /*optional: create and return hash given the data of nexe, developer can use if her nexes are really small*/
-void MakeNaClHash(const void* nexeData, unsigned int hash[20]);
+void MakeNaClHash(const void* nexeData, int nexeDataLength, unsigned int hash[20]);
 #endif
