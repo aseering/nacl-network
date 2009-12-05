@@ -45,6 +45,12 @@ sources_c = [
 'getpeername.c',
 'getsockname.c',
 'getsockopt.c',
+'inet_addr.c',
+'inet_neta.c',
+'inet_net_ntop.c',
+'inet_net_pton.c',
+'inet_ntop.c',
+'inet_pton.c',
 'listen.c',
 'recv.c',
 'recvfrom.c',
@@ -55,7 +61,7 @@ sources_c = [
 'setsockopt.c',
 'shutdown.c',
 'socket.c',
-'socketpair.c',    
+'socketpair.c',
     ]
 
 
