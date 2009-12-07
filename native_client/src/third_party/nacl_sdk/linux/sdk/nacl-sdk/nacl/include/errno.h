@@ -7,5 +7,5 @@ typedef int error_t;
 #endif
 
 #include <sys/errno.h>
-
+# define __set_errno(val) (errno = (val))
 #endif /* !__ERRNO_H__ */
