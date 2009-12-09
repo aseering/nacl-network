@@ -63,8 +63,8 @@
 # include <sys/types.h>
 #endif
 #include <sys/cdefs.h>
-typedef unsigned int u_int16_t;
-/*%
+//typedef unsigned int u_int16_t;
+/*
  * Revision information.  This is the release date in YYYYMMDD format.
  * It can change every day so the right thing to do with it is use it
  * in preprocessor commands such as "#if (__NAMESER > 19931104)".  Do not
@@ -113,7 +113,7 @@ typedef enum __ns_sect {
  */
 typedef struct __ns_msg {
 	const u_char	*_msg, *_eom;
-	u_int16_t	_id, _flags, _counts[ns_s_max];
+	uint16_t	_id, _flags, _counts[ns_s_max];
 	const u_char	*_sections[ns_s_max];
 	ns_sect		_sect;
 	int		_rrnum;
@@ -137,10 +137,10 @@ extern const struct _ns_flagdata _ns_flagdata[];
  */
 typedef	struct __ns_rr {
 	char		name[NS_MAXDNAME];
-	u_int16_t	type;
-	u_int16_t	rr_class;
+	uint16_t	type;
+	uint16_t	rr_class;
 	unsigned long	ttl;
-	u_int16_t	rdlength;
+	uint16_t	rdlength;
 	const u_char *	rdata;
 } ns_rr;
 
@@ -434,8 +434,8 @@ typedef enum __ns_cert_types {
  */
 #define NS_GET16(s, cp) do { \
 	register const u_char *t_cp = (const u_char *)(cp); \
-	(s) = ((u_int16_t)t_cp[0] << 8) \
-	    | ((u_int16_t)t_cp[1]) \
+	(s) = ((uint16_t)t_cp[0] << 8) \
+	    | ((uint16_t)t_cp[1]) \
 	    ; \
 	(cp) += NS_INT16SZ; \
 } while (0)
@@ -451,7 +451,7 @@ typedef enum __ns_cert_types {
 } while (0)
 
 #define NS_PUT16(s, cp) do { \
-	register u_int16_t t_s = (u_int16_t)(s); \
+	register uint16_t t_s = (uint16_t)(s); \
 	register u_char *t_cp = (u_char *)(cp); \
 	*t_cp++ = t_s >> 8; \
 	*t_cp   = t_s; \
