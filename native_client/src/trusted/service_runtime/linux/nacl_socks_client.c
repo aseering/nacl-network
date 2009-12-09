@@ -24,9 +24,9 @@ int verifyServerPort(struct NaClRemoteServerPorts *p, short port, int protocol) 
 }
 
 
-int NaClIsConnectionOk(int ip, short port, int domain, int type, int protocol) {
-  if (domain != PF_INET && domain != PF_INET6) {
-    return -1; // We don't support anything != IPv4 or IPv6 at this time
+int NaClIsConnectionOk(struct sockaddr *addr) {
+  if (domain != PF_INET) {
+    return -1; // We don't support anything != IPv4 at this time
   }
 
   // We support any type of connection at this time;
@@ -46,7 +46,46 @@ int NaClIsConnectionOk(int ip, short port, int domain, int type, int protocol) {
   }
 
   // We don't.  So, go fetch a response, and use it.
-  /* TODO */
+  // Somehow, we have to get our own hash.
+  // For now, just hardcode a magic value.
+  char hash[20];
+  char buf[24];
+  char ret_buf[1024];
+  int len;
+  struct sockaddr_in *addr_in = (struct sockaddr_in *)addr;
+  struct NaClServerRemotePorts *remote_ports;
+  
+  MakeNaClHashReq(&buf, &natp->app_hash, 0);
+  
+  struct addrinfo hints, *servinfo, *p;
+  struct sockaddr_storage from;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_DGRAM;
+  
+  if ((r = getaddrinfo(NULL, SERVERPORT, &hints, &servinfo)) != 0) {
+    return -1;
+  }
+  
+  if ((sockfd = socket(servinfo[0].ai_family, serverinfo[0].ai_socktype, serverinfo[0].ai_protocol)) == -1)  {
+    return sockfd;
+  }
+  
+  sendto(sockfd, &buf, sizeof(buf), 0, addr, sizeof(struct sockaddr_storage));
+  
+  if ((len = recvfrom(sockfd, &ret_buf, sizeof(ret_buf), 0, &from, sizeof(struct sockaddr_storage))) < 0) {
+    return -1;
+  }
+
+  close(sockfd);
+
+  if ((r = ParseNaClHashResp(&ret_buf, len, addr_in->sin_addr->s_addr, &remote_ports)) != 0) {
+    return r;
+  }
+
+  // hm...  We don't know here whether this request is for UDP or TCP (/etc).
+  // For now, assume TCP.
+  return verifyServerPort(remote_port, addr_in->sin_port, IPPROTO_TCP);
 }
 
 
@@ -59,7 +98,7 @@ void MakeNaClHashReq(unsigned char *buf, unsigned char *hash, int nonce) {
 
 /*Given the response from the server, fills in and sets ports to point to the NaClRemoteServerPorts struct*/
 /*returns 0 on success nonzero on error*/
-int ParseNaClHashResp(const char* buf, int buf_len, int server_ip, struct NaClRemoteServerPorts **ports) {
+int ParseNaClHashResp(const char* buf, int buf_len, unsigned int server_ip, struct NaClRemoteServerPorts **ports, int nonce) {
   /* Format is as follows:
    * 
    * First 32 bits: success code (4-byte integer, in network order) -- 0 indicates success

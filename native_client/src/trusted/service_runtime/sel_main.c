@@ -57,6 +57,7 @@
 #include "native_client/src/trusted/service_runtime/nacl_globals.h"
 #include "native_client/src/trusted/service_runtime/nacl_syscall_common.h"
 #include "native_client/src/trusted/service_runtime/sel_ldr.h"
+#include "native_client/src/trusted/service_runtime/linux/nacl_socks_client.h"
 
 /* may redefine main() to install a hook */
 #if defined(HAVE_SDL)
@@ -419,6 +420,9 @@ int main(int  ac,
     fprintf(stderr, "No nacl file specified\n");
     return 1;
   }
+  
+  /* We have the file; go get a hash of its contents */
+  MakeNaClHash(nacl_file, &nap->app_hash);
 
   /* to be passed to NaClMain, eventually... */
   av[--optind] = "NaClMain";
