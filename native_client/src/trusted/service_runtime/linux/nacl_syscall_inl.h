@@ -81,6 +81,6 @@ static INLINE int32_t NaClXlateSysRetAddr(struct NaClApp  *nap,
           : -NaClXlateErrno(errno));
 }
 
-int NaClValidateIp(struct NaClAppThread  *natp, struct sockaddr* addr);
+int NaClValidateIp(struct NaClAppThread  *natp, const struct sockaddr* addr);
 
 #endif
