@@ -605,7 +605,6 @@ cleanup:
 //that are outside the sandbox
 int32_t NaClSysAccept(struct NaClAppThread  *natp, int fd, struct sockaddr* addr,
 		   socklen_t *addr_len) {
-	UNREFERENCED_PARAMETER(natp);
 	int r;
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
 	  return r;
@@ -615,7 +614,6 @@ int32_t NaClSysAccept(struct NaClAppThread  *natp, int fd, struct sockaddr* addr
 
 int32_t NaClSysBind(struct NaClAppThread  *natp, int fd,
 		const struct sockaddr * addr, socklen_t len) {
-	UNREFERENCED_PARAMETER(natp);
 	int r;
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
 	  return r;
@@ -625,7 +623,6 @@ int32_t NaClSysBind(struct NaClAppThread  *natp, int fd,
 
 int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 		const struct sockaddr* addr, socklen_t len) {
-	UNREFERENCED_PARAMETER(natp);
 	int r;
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
 	  return r;
@@ -635,7 +632,6 @@ int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 
 int32_t NaClSysGetpeername(struct NaClAppThread  *natp, int fd,
 		struct sockaddr* addr, socklen_t *len) {
-	UNREFERENCED_PARAMETER(natp);
 	int r;
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
 	  return r;
@@ -645,7 +641,6 @@ int32_t NaClSysGetpeername(struct NaClAppThread  *natp, int fd,
 
 int32_t NaClSysGetsockname(struct NaClAppThread  *natp, int fd,
 		struct sockaddr* addr, socklen_t *len) {
-	UNREFERENCED_PARAMETER(natp);
 	int r;
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
 	  return r;
@@ -675,7 +670,6 @@ int32_t NaClSysRecv(struct NaClAppThread  *natp, int fd, void *buf,
 int32_t NaClSysRecvfrom(struct NaClAppThread  *natp, int fd, void *buf, size_t n,
 		 int flags, struct sockaddr* addr,
 		 socklen_t *addr_len) {
-	UNREFERENCED_PARAMETER(natp);
 	int r;
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
 	  return r;
@@ -706,8 +700,8 @@ int32_t NaClSysSendto(struct NaClAppThread  *natp, int fd,
 		   const void *buf, size_t n,
 	       int flags, const struct sockaddr* addr,
 	       socklen_t addr_len) {
-	UNREFERENCED_PARAMETER(natp);
 	int r;
+	UNREFERENCED_PARAMETER(natp);
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
 	  return r;
 	}

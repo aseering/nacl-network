@@ -265,7 +265,7 @@ struct NaClApp {
   struct DynArray           desc_tbl;  /* NaClDesc pointers */
 
 
-  char app_hash[20];  /* SHA-1 hash of the application binary file */
+  unsigned char app_hash[20];  /* SHA-1 hash of the application binary file */
 };
 
 #define NACL_MAX_PROGRAM_HEADERS  128

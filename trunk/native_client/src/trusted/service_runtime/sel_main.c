@@ -422,7 +422,7 @@ int main(int  ac,
   }
   
   /* We have the file; go get a hash of its contents */
-  MakeNaClHash(nacl_file, &nap->app_hash);
+  MakeNaClHash(nacl_file, &(state.app_hash[0]));
 
   /* to be passed to NaClMain, eventually... */
   av[--optind] = "NaClMain";
