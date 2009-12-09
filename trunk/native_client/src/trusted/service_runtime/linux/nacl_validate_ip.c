@@ -1,24 +1,25 @@
 #include <sys/socket.h>
 
 #include "native_client/src/trusted/service_runtime/nacl_app_thread.h"
+#include "native_client/src/trusted/service_runtime/linux/nacl_socks_client.h"
 
 #define IGNORE_CHECKS
+#define SERVER_PORT 11234
 
 int NaClValidateIp(struct NaClAppThread  *natp, struct sockaddr* addr) {
 #ifdef IGNORE_CHECKS
-  return 0;
+	return 0;
 #else
-  // Allow privileged apps automatically
-  if (natp->is_privileged) {
-    return 0;
-  }
+	int i;
+	int r;
+	int sockfd;
 
-  // Somehow, we have to get our own hash.
-  // For now, just hardcode a magic value.
-  int 
+	// Allow privileged apps automatically
+	if (natp->is_privileged) {
+		return 0;
+	}
 
-
-  
-  return -1;
+	return NaClIsConnectionOk(addr);
+	
 #endif // IGNORE_CHECKS
 }
