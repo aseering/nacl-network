@@ -36,7 +36,8 @@
 #include <stdio.h>
 #include <netinet/in.h>
 #include <stdlib.h>
-
+#include <arpa/inet.h>
+#include <string.h>
 
 int failed(const char *testname, const char *msg) {
   printf("TEST FAILED: %s: %s\n", testname, msg);
@@ -63,6 +64,7 @@ int test_socket() {
   return passed(testname, "all   ");
 }
 
+#define RCVBUFSIZE 10000
 
 int test_open_conn() {
 
