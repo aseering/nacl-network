@@ -12,6 +12,7 @@
 
 #include "native_client/src/trusted/service_runtime/linux/nacl_socks_client.h"
 #include "native_client/src/trusted/service_runtime/nacl_app_thread.h"
+#include "native_client/src/trusted/service_runtime/sel_ldr.h"
 
 #define NUM_REMOTE_SERVER_PORTS 20
 struct NaClRemoteServerPorts remoteServerPortsRingbuffer[NUM_REMOTE_SERVER_PORTS];
