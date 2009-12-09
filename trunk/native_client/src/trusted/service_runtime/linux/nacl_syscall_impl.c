@@ -620,12 +620,19 @@ int32_t NaClSysBind(struct NaClAppThread  *natp, int fd,
 	}
 	return bind(fd, addr, len);
 }
-
+ 
 int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 		const struct sockaddr* addr, socklen_t len) {
 	int r;
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
+	  printf("Validation failing...\n");
 	  return r;
+	}
+	r = connect(fd, addr, len);
+	if (r == 0) {
+	  printf("connect worked!\n");
+	} else {
+	  printf("connect failed...\n");
 	}
 	return connect(fd, addr, len);
 }
