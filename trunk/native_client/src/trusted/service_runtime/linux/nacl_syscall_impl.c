@@ -42,6 +42,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 
 #include "native_client/src/include/portability.h"
 #include "native_client/src/include/nacl_platform.h"
@@ -624,16 +625,31 @@ int32_t NaClSysBind(struct NaClAppThread  *natp, int fd,
 int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 		const struct sockaddr* addr, socklen_t len) {
 	int r;
-	if ((r = NaClValidateIp(natp, addr)) != 0) {
-	  printf("Validation failing...\n");
+	int i;
+
+	struct sockaddr_in *addr_in = (struct sockaddr_in *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, len); /* Echo server address */
+
+	if (kNaClBadAddress == (uintptr_t)addr_in) {
+	  return -NACL_ABI_EFAULT;	 
+	}
+
+	printf("0x%x", (unsigned int)addr_in);
+	printf("Testing 1 2 3...\n");
+	if ((r = NaClValidateIp(natp, (struct sockaddr *)addr_in)) != 0) {
+	  printf("Validation failing...: %d\n", r);
 	  return r;
 	}
-	r = connect(fd, addr, len);
-	if (r == 0) {
-	  printf("connect worked!\n");
-	} else {
-	  printf("connect failed...\n");
+	printf("A\n");
+	r = connect(fd, (struct sockaddr *)addr_in, len);
+	for (i = 0; i < 1000; i++) {
+	  printf(".");
 	}
+	printf("B\n");
+	printf("connect failed...:  %s (%d) (IP %s)\n", strerror(errno), errno, inet_ntoa(addr_in->sin_addr));
+	/*	if (r != 0) {
+	  
+		}*/
+	printf("returning from connect()\n");
 	return connect(fd, addr, len);
 }
 
