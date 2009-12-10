@@ -23,18 +23,19 @@ int main(int argc, char *argv[])
 
     if ((argc < 3) || (argc > 4))    /* Test for correct number of arguments */
     {
-       fprintf(stderr, "Usage: %s <Server IP> <Echo Word> [<Echo Port>]\n",
-               argv[0]);
-       exit(1);
-    }
+       /*fprintf(stderr, "Usage: %s <Server IP> <Echo Word> [<Echo Port>]\n", argv[0]);*/
+       servIP = "127.0.0.1";
+       echoString = "Hello NaCl World!";
+    } else {
 
-    servIP = argv[1];             /* First arg: server IP address (dotted quad) */
-    echoString = argv[2];         /* Second arg: string to echo */
+    	servIP = argv[1];             /* First arg: server IP address (dotted quad) */
+    	echoString = argv[2];         /* Second arg: string to echo */
+    }
 
     if (argc == 4)
         echoServPort = atoi(argv[3]); /* Use given port, if any */
     else
-        echoServPort = 7;  /* 7 is the well-known port for the echo service */
+        echoServPort = 7000;  /* 7 is the well-known port for the echo service */
 
     /* Create a reliable, stream socket using TCP */
     if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
@@ -48,7 +49,7 @@ int main(int argc, char *argv[])
 
     /* Establish the connection to the echo server */
     if (connect(sock, (struct sockaddr *) &echoServAddr, sizeof(echoServAddr)) < 0)
-        DieWithError("connect() failed");
+        DieWithError("attempt to connect() failed");
 
     echoStringLen = strlen(echoString);          /* Determine input length */
 
