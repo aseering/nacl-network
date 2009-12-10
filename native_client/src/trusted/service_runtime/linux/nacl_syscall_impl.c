@@ -629,6 +629,8 @@ int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 
 	struct sockaddr_in *addr_in = (struct sockaddr_in *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, len); /* Echo server address */
 
+	printf("Addr: 0x%x\tLen: %d\n", (uint32_t)addr, (uint32_t)len);
+	
 	if (kNaClBadAddress == (uintptr_t)addr_in) {
 	  return -NACL_ABI_EFAULT;	 
 	}

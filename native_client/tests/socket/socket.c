@@ -38,6 +38,7 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <errno.h>
 
 int failed(const char *testname, const char *msg) {
   printf("TEST FAILED: %s: %s\n", testname, msg);
@@ -61,7 +62,7 @@ int test_socket() {
   fd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
   if(fd < 0)
 	  return failed(testname, "socket(PF_INET, SOCK_STREAM, IPPPROTO_TCP)");
-  return passed(testname, "all   ");
+  return passed(testname, "all");
 }
 
 #define RCVBUFSIZE 10000
@@ -78,11 +79,12 @@ int test_open_conn() {
     int bytesRcvd, totalBytesRcvd;   /* Bytes read in single recv() 
                                         and total bytes read */
 
-    servIP = "127.0.0.1";
-
+    servIP = "127.126.125.124";
     echoString = "Test Echo";
 
-    echoServPort = 7;  /* 7 is the well-known port for the echo service */
+    echoServPort = 7000;  /* 7 is the well-known port for the echo service */
+
+    printf("Just before socket() call\n");
 
     /* Create a reliable, stream socket using TCP */
     if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
@@ -91,9 +93,10 @@ int test_open_conn() {
     /* Construct the server address structure */
     memset(&echoServAddr, 0, sizeof(echoServAddr));     /* Zero out structure */
     echoServAddr.sin_family      = AF_INET;             /* Internet address family */
-    echoServAddr.sin_addr.s_addr = inet_addr(servIP);   /* Server IP address */
+    /*echoServAddr.sin_addr.s_addr = */inet_aton(servIP, &echoServAddr.sin_addr.s_addr);   /* Server IP address */
     echoServAddr.sin_port        = htons(echoServPort); /* Server port */
 
+    printf("connect test:  IP 0x%lx\n", (uint32_t)echoServAddr.sin_addr.s_addr);
     /* Establish the connection to the echo server */
     if (connect(sock, (struct sockaddr *) &echoServAddr, sizeof(echoServAddr)) < 0)
       return failed("open_conn", "connect");
@@ -129,7 +132,9 @@ int test_open_conn() {
 int testSuite() {
   int ret = 1;
   ret &= test_socket();
+  printf("Done with testSuite; testing test_open_conn.\n");
   ret &= test_open_conn();
+  printf("Done with test_open_conn()\n");
   
 /*
  * ret &= test_socketpair();
