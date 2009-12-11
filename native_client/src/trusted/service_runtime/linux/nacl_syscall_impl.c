@@ -625,11 +625,14 @@ int32_t NaClSysBind(struct NaClAppThread  *natp, int fd,
 int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 		const struct sockaddr* addr, socklen_t len) {
 	int r;
-	int i;
+	char buf[100];
+
 
 	struct sockaddr_in *addr_in = (struct sockaddr_in *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, len); /* Echo server address */
 
-	printf("Addr: 0x%x\tLen: %d\n", (uint32_t)addr, (uint32_t)len);
+	inet_ntop(AF_INET, &addr_in->sin_addr, &buf[0], sizeof(buf));
+
+	printf("Addr: (0x%x 0x%x) 0x%x '%s':0x%hx\tLen: %d\n", AF_INET, addr_in->sin_family, (uint32_t)addr, &buf[0], addr_in->sin_port, (uint32_t)len);
 	
 	if (kNaClBadAddress == (uintptr_t)addr_in) {
 	  return -NACL_ABI_EFAULT;	 
@@ -643,16 +646,13 @@ int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 	}
 	printf("A\n");
 	r = connect(fd, (struct sockaddr *)addr_in, len);
-	for (i = 0; i < 1000; i++) {
-	  printf(".");
-	}
+
 	printf("B\n");
-	printf("connect failed...:  %s (%d) (IP %s)\n", strerror(errno), errno, inet_ntoa(addr_in->sin_addr));
-	/*	if (r != 0) {
-	  
-		}*/
+	if (r != 0)
+	  printf("connect failed...:  %s (%d) (IP %s)\n", strerror(errno), errno, inet_ntoa(addr_in->sin_addr));
+
 	printf("returning from connect()\n");
-	return connect(fd, addr, len);
+	return r;
 }
 
 int32_t NaClSysGetpeername(struct NaClAppThread  *natp, int fd,

@@ -79,10 +79,10 @@ int test_open_conn() {
     int bytesRcvd, totalBytesRcvd;   /* Bytes read in single recv() 
                                         and total bytes read */
 
-    servIP = "127.0.0.1";
+    servIP = "18.208.0.160";
     echoString = "Test Echo";
 
-    echoServPort = 7000;  /* 7 is the well-known port for the echo service */
+    echoServPort = 7;  /* 7 is the well-known port for the echo service */
 
     printf("Just before socket() call\n");
 
@@ -93,8 +93,9 @@ int test_open_conn() {
     /* Construct the server address structure */
     memset(&echoServAddr, 0, sizeof(echoServAddr));     /* Zero out structure */
     echoServAddr.sin_family      = AF_INET;             /* Internet address family */
-    /*echoServAddr.sin_addr.s_addr = */inet_pton(AF_INET, servIP, &echoServAddr.sin_addr.s_addr);   /* Server IP address */
+    inet_pton(AF_INET, servIP, &echoServAddr.sin_addr.s_addr);   /* Server IP address */
     echoServAddr.sin_port        = htons(echoServPort); /* Server port */
+    printf("ENDIAN:  %d %d %d %hx %hx\n", __BIG_ENDIAN, __LITTLE_ENDIAN, __BYTE_ORDER, echoServPort, echoServAddr.sin_port);
 
     printf("connect test:  IP 0x%lx\n", (uint32_t)echoServAddr.sin_addr.s_addr);
     /* Establish the connection to the echo server */
