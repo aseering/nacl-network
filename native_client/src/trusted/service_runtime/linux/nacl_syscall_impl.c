@@ -648,6 +648,16 @@ int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 int32_t NaClSysGetpeername(struct NaClAppThread  *natp, int fd,
 		struct sockaddr* addr, socklen_t *len) {
 	int r;
+        void *newaddr;
+	socklen_t *newlen;
+	newlen = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) len, sizeof(socklen_t));
+	if (kNaClBadAddress == (uintptr_t)newlen) {
+	  return -NACL_ABI_EFAULT;	 
+	}
+	newaddr = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, *newlen);
+	if (kNaClBadAddress == (uintptr_t)newaddr) {
+	  return -NACL_ABI_EFAULT;	 
+	}
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
 	  return r;
 	}
@@ -657,10 +667,20 @@ int32_t NaClSysGetpeername(struct NaClAppThread  *natp, int fd,
 int32_t NaClSysGetsockname(struct NaClAppThread  *natp, int fd,
 		struct sockaddr* addr, socklen_t *len) {
 	int r;
+        void *newaddr;
+	socklen_t *newlen;
+	newlen = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) len, sizeof(socklen_t));
+	if (kNaClBadAddress == (uintptr_t)newlen) {
+	  return -NACL_ABI_EFAULT;	 
+	}
+	newaddr = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, *newlen);
+	if (kNaClBadAddress == (uintptr_t)newaddr) {
+	  return -NACL_ABI_EFAULT;	 
+	}
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
 	  return r;
 	}
-	return getsockname(fd, addr, len);
+	return getsockname(fd, newaddr, newlen);
 }
 
 int32_t NaClSysGetsockopt(struct NaClAppThread  *natp, int fd, int level,
@@ -689,10 +709,20 @@ int32_t NaClSysRecvfrom(struct NaClAppThread  *natp, int fd, void *buf, size_t n
 		 int flags, struct sockaddr* addr,
 		 socklen_t *addr_len) {
 	int r;
+        void *newaddr;
+	socklen_t *newaddr_len;
+	newaddr_len = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr_len, sizeof(socklen_t));
+	if (kNaClBadAddress == (uintptr_t)newaddr_len) {
+	  return -NACL_ABI_EFAULT;	 
+	}
+	newaddr = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, *newaddr_len);
+	if (kNaClBadAddress == (uintptr_t)newaddr) {
+	  return -NACL_ABI_EFAULT;	 
+	}
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
 	  return r;
 	}
-	return recvfrom(fd, buf, n, flags, addr, addr_len);
+	return recvfrom(fd, buf, n, flags, newaddr, newaddr_len);
 }
 
 int32_t NaClSysRecvmsg(struct NaClAppThread  *natp, int fd,
