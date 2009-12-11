@@ -1,0 +1,19 @@
+This program is an example implementation of a responder that will reply granting Google NaCl Networking-enabled apps, access to specific ports on the local server.
+
+The program as currently written, grants access to ports 7, 80, and 1123.  As per the access-granting protocol, it should be told to listen on port 1123.  The other two ports are for an HTTP server and an echo server.
+
+Developers are encouraged to use this code as a template to enable specific ports on their own server.  The code can be easily modified to open any port, and to validate the connecting application by checking its hash.  See "HandleTCPClient-Validate.c".
+
+Developers may also wish to integrate this functionality into existing server software.  Developers are welcome to use the helper functions in nacl_socks_server.c and nacl_socks_server.h.
+
+
+In order to build this program, simply type:
+make
+
+Other interesting make targets include:
+make clean      # Remove all generated binary files
+make runserver  # Build the server; then execute it 
+
+This program uses the POSIX networking API; it must be compiled on a system that supports this API and has the corresponding C header files installed.
+
+This program also depends on an implementation of libssl.  It has been tested against OpenSSL.  The software can be modified to remove this restriction by editing nacl_socks_server.c and nacl_socks_server.h and removing the MakeNaClHash() function, and removing all references to "openssl/sha.h".  This will not affect the program as currently implemented, but it will remove the API's functionality to find hash values of arbitrary objects; in order to filter by hash, the hash of the binary object being compared, will need to be computed using other tools.
