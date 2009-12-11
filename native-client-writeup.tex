@@ -1,0 +1,227 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{url}
+
+%opening
+\title{POSIX Network Support for Google Native Client}
+\author{Nizam Ordulu, Adam Seering}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This project provides secure support for POSIX networking API calls within the
+untrusted Google Native Client environment.
+
+The specific implementation prevents users of Google Native Client from being
+used for reflection attacks against a remote server, and protects users'
+private firewalled network services from being exposed to an attacker on the
+other side of the firewall.
+\end{abstract}
+
+\section{API}
+
+The POSIX Networking API is replicated using Native Client Syscalls.  The
+Native Client Syscalls call functions in Native Client's trusted code library,
+which can call the equivalent operating-system-level syscalls after an
+appropriate amount of checking.
+
+A number of POSIX API calls, as follows, are passed to Native Client this way.
+The following function calls are passed through unmodified:
+
+\begin{itemize}
+\item \texttt{getaddrinfo(const char *node,
+                const char *service,
+                const struct addrinfo *hints,
+                struct addrinfo **res)}
+\item \texttt{int getsockopt(int socket, int level, int option\_name, const void
+                *option\_value, socklen\_t option\_len)}
+\item \texttt{int listen(int socket, int backlog)}
+\item \texttt{ssize\_t recv(int socket, void *buffer, size\_t length, int
+flags)}
+\item \texttt{ssize\_t recvmsg(int socket, struct msghdr *message, int flags)}
+\item \texttt{ssize\_t send(int socket, const void *buffer, size\_t length, int
+flags)}
+\item \texttt{ssize\_t sendmsg(int socket, const struct msghdr *message, int
+flags)}
+\item \texttt{int setsockopt(int socket, int level, int option\_name, const void
+                *option\_value, socklen\_t option\_len)}
+\item \texttt{int shutdown(int socket, int how)}
+\item \texttt{int socket(int domain, int type, int protocol)}
+\item \texttt{int socketpair(int domain, int type, int protocol,
+       int socket\_vector[2])}
+\end{itemize}
+
+None of these function calls are able to call any harm by themselves (aside
+from resource exhaustion on the client, which Native Client applications can
+already achieve in other ways).  They simply gather information from the system
+or allocate local resources for use by other system calls.
+
+The following functions did require modification:
+
+\begin{itemize}
+\item \texttt{int accept(int s, struct sockaddr *addr, socklen\_t *addrlen)}
+\item \texttt{int connect(int socket, const struct sockaddr *address,
+       socklen\_t address\_len)}
+\item \texttt{int bind(int socket, const struct sockaddr *address,
+       socklen\_t address\_len)}
+
+\item \texttt{int getpeername(int socket, struct sockaddr *restrict address,
+       socklen\_t *restrict address\_len)}
+\item \texttt{int getsockname(int socket, struct sockaddr *restrict address,
+       socklen\_t *restrict address\_len)}
+
+\item \texttt{ssize\_t recvfrom(int socket, void *restrict buffer, size\_t
+length,
+       int flags, struct sockaddr *restrict address,
+       socklen\_t *restrict address\_len)}
+\item \texttt{ssize\_t sendto(int socket, const void *message, size\_t length,
+       int flags, const struct sockaddr *dest\_addr,
+       socklen\_t dest\_len)}
+\end{itemize}
+
+In particular, each of these functions has the ability to configure the IP
+address that a socket points at, either directly or indirectly by using
+the socket to perform some action or discover some information.  This
+information is contained within the ``struct sockaddr'' structure.  The
+modification to each of these calls was very straightforward: Wrapper code added
+to Native Client's trusted library, first verifies that the host at the
+IP address specified in the ``struct sockaddr'' argument is willing to
+communicate with this client.  If the host is willing to communicate, control
+is transparently passed to the underlying operating-system-level protocol.  If
+the host is not willing to communicate, the Native Client system call returns
+with an error code of $-1$, a generic error code, so that sandboxed
+applications can't trivially tell whether a host refused the connection, or was
+simply unavailable.
+
+\section{Protocol}
+
+The verification protocol takes place using an out-of-band TCP socket
+connection between the client and the remote host.  The verification is
+executed entirely in trusted Native Client code, and takes place synchronously
+(so that it appears atomic from the perspective of the Native Client code) so
+that the untrusted sandbox can't insert malicious responses on behalf of the
+remote server.
+
+An out-of-band connection method was chosen so that both client and server
+applications can be run without modification, aside from any modifications that
+the client otherwise needs to run within Google Native Client.  It allows
+further communications to occur over unmodified IP.
+
+\subsection{Validation}
+
+In order for a connection to be allowed to take place, it must first match a
+number of conditions.
+
+We first verify that the connection is taking place over IP.  We do not allow
+non-IP connections at this time, and we restrict IP connections to IPv4.
+Additional protocols could be allowed securely without a great deal of
+difficulty; future development could focus on adding such support.
+
+Once we have confirmed that the connection is taking place over IP, if we have
+not seen the requested IP addres before, we open a TCP connection to port 1123
+on the IP address that the Native Client application is attempting to connect
+to, and we send a packet containing the SHA-1 hash of the binary .nexe file
+containing the Native Client application, and a randomly-generated nonce.  If
+this connection is refused, the Native Client application's attempted connection
+is aborted.
+
+If the connection is accepted, the server returns a status integer, the
+original nonce generated by the client, and a bitmap of IP ports that the
+client is allowed to connect to.  If the status integer is nonzero, the
+client's connection attempt is aborted.  If the returned nonce is not equal to
+the original nonce sent by the client, the connection is aborted.  If the bit in
+the bitmap corresponding to the port that the Native Client application wants
+to connect to, is set to 1, the connection is allowed to proceed.
+
+We keep an in-process cache of (IP, Allowed Ports) mappings, so that this
+information does not need to be retrieved multiple times from the remote
+server.  We do not currently provide a means for the remote server to
+invalidate this cache; server administrators are expected to provide correct
+initial port-access information, and to instruct their users to close and
+re-open Google Native Client if they need to change that information rapidly.
+We choose not to provide a cache-invalidation mechanism because such a
+mechanism would put additional load on the remote server; it would either need
+to respond to many more validation requests, or maintain open sockets to each
+connected client.
+
+\section{Usage}
+
+Our code is available on Google Code, project name ``nacl-network'':
+
+\url{http://code.google.com/p/nacl-network}
+
+It can be downloaded from the ``Source'' tab at that location.
+
+As our code is based heavily on Google Native Client, it uses the Google Native
+Client's build system, as documented on the Native Client page:
+
+\url{
+http://nativeclient.googlecode.com/svn/trunk/src/native_client/documentation/bui
+lding.html}
+
+We use the following (modified) sequence of build commands within their build
+system:
+
+\begin{verbatim}
+cd nacl-network/native_client/
+./scons
+./scons --mode=nacl_extra_sdk,dbg-linux extra_sdk_clean
+extra_sdk_update_headerextra_sdk_update
+./scons --mode=nacl
+yes | ./scons firefox_install
+firefox
+"http://localhost/native_client/scons-out/nacl-x86-32/staging/echo.html"
+\end{verbatim}
+
+Note that the test above requires that you are serving the Native Client
+repository over HTTP from your local computer.  This requirement is imposed
+by Native Client's security model.  Native Client comes bundled with a
+Python-based web server that you can use for this purpose, if you are not
+already running a Web server; its usage is documented at the link above.
+
+Also note that this series of build commands requires the Firefox Web browser,
+and will install our modified Native Client plugin for Firefox.
+
+Our code modifications have been tested on Linux; specifically, 32-bit Ubuntu
+Jaunty.  (Native Client makes use of the memory segmentation features of
+the 32-bit x86 processor, and so is unable to run natively under 64-bit Linux.)
+Google Native Client also supports Mac OS X and Windows. We would expect our
+code to support Mac OS X with relatively little porting effort. We would expect
+a Windows port to take somewhat more effort, as Windows has a substantially
+different underlying networking subsystem.
+
+The test case above also requires that an echo server be running on
+localhost:7 (such a server is available through xinetd under Linux), and for a
+validation server to be running on port 1123 to authorize clients to connect.
+
+\subsection{Validation Server}
+
+We provide a simple validation server as an example for server maintainers
+attempting to make use of this patch.  The server can be found at
+\texttt{third\_party/nacl\_acl\_server/} inside the source repository.  The
+server can be built using the Makefile in that directory.  See the README file
+in that directory for further details.
+
+The provided validation server reads, but does not perform any checks on, the
+hash of the client application.  This is expected to be the common case for
+public services accessed by a wide array of applications.  Private services
+will want to insert a check in this code to verify the hash, and set the ``ok''
+variable to a nonzero value if the hash is not recognized.  The server also
+allows ports 7 (echo), 80 (http), and 1123 (Native Client validation).  In
+general, servers will probably not want to allow client programs to access port
+1123 on production servers, so as to restrict their access to authentication
+information. However, for debugging and development purposes this setting can be
+quite useful.
+
+\section{Credits}
+
+In addition to making extensive use of the Google Native Client application,
+source code, and documentation, this project also uses header files from
+the glibc library,  as well as source files that provide some low-level network
+byte-ordering and IP-address-parsing functionality.  It also makes use of the
+sample ``echo'' client and server code from the book \underline{TCP/IP Sockets
+in C}, by Kenneth L. Calvert and Michael J. Donahoo.
+
+\end{document}
