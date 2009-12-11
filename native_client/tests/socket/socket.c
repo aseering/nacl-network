@@ -84,8 +84,6 @@ int test_open_conn() {
 
     echoServPort = 7;  /* 7 is the well-known port for the echo service */
 
-    printf("Just before socket() call\n");
-
     /* Create a reliable, stream socket using TCP */
     if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
       return failed("open_conn", "socket");
@@ -95,9 +93,7 @@ int test_open_conn() {
     echoServAddr.sin_family      = AF_INET;             /* Internet address family */
     inet_pton(AF_INET, servIP, &echoServAddr.sin_addr.s_addr);   /* Server IP address */
     echoServAddr.sin_port        = htons(echoServPort); /* Server port */
-    printf("ENDIAN:  %d %d %d %hx %hx\n", __BIG_ENDIAN, __LITTLE_ENDIAN, __BYTE_ORDER, echoServPort, echoServAddr.sin_port);
 
-    printf("connect test:  IP 0x%lx\n", (uint32_t)echoServAddr.sin_addr.s_addr);
     /* Establish the connection to the echo server */
     if (connect(sock, (struct sockaddr *) &echoServAddr, sizeof(echoServAddr)) < 0)
       return failed("open_conn", "connect");
@@ -110,7 +106,6 @@ int test_open_conn() {
 
     /* Receive the same string back from the server */
     totalBytesRcvd = 0;
-    printf("Received: ");                /* Setup to print the echoed string */
     while (totalBytesRcvd < echoStringLen)
     {
         /* Receive up to the buffer size (minus 1 to leave space for
