@@ -1,0 +1,32 @@
+<html>
+  <head>
+  <script type="text/javascript">
+//Before running tests we need to ensure the Native Client modules are loaded.
+  var startupTimeout;
+  var RunTestsAfterLoad = function() {
+	  // Initialize the selenium magic to failure here.
+	  if (app.__moduleReady) {
+	    clearTimeout(startupTimeout);
+	    EnqueueAndRunTests();
+	  } else {
+	    if (app.__moduleReady == undefined) {
+	      alert('The Native Client plugin was unable to load');
+	      return;
+	    }
+	    startupTimeout = setTimeout(RunTestsAfterLoad, 100);
+	  }
+	}
+  var Init = function(boxsize) {
+	  // Remember object to make access to the elements easier.
+	  app = document.getElementById('nacl_app');
+	  // Run the tests after ensuring loads have completed.
+	  RunTestsAfterLoad();
+	}
+  </script>
+  </head>
+  <body onload="Init();">
+  <script type="text/javascript">  
+  document.write('<embed type="application/x-nacl-srpc" id="nacl_app" width="0" height="0" src="TCPEchoClient.nexe?a=' +Math.random()  + '" />');
+  </script>
+  </body>
+</html>
