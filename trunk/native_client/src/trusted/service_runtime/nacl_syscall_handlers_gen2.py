@@ -70,7 +70,7 @@ IMPLEMENTATION_SKELETON = """\
 /* this function was automagically generated */
 static int32_t %(name)sDecoder(struct NaClAppThread *natp) {
 %(members)s\
-#if %(syscalldefine)s >= NACL_sys_accept 
+#if %(syscalldefine)s >= 150 
   NaClLog(0, "nacl_syscall_handlers.c:%(name)sDecoder called\\n");
   NaClLog(0, "calling %(name)s\\n");
 #endif  

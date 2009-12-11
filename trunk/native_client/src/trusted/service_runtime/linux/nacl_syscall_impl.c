@@ -634,9 +634,9 @@ int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 	struct sockaddr_in *addr_in;
 
 
-	NaClLog(0, "nacl_syscall_impl.c:NaclSysConnect\n");
+	NaClLog(4, "nacl_syscall_impl.c:NaclSysConnect\n");
 	addr_in = (struct sockaddr_in *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, len); /* Echo server address */
-	NaClLog(0, "Addr: 0x%x\tLen: %d\n", (uint32_t)addr, (uint32_t)len);
+	NaClLog(4, "Addr: 0x%x\tLen: %d\n", (uint32_t)addr, (uint32_t)len);
 	
 
 	addr_in = (struct sockaddr_in *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, len); /* Echo server address */
