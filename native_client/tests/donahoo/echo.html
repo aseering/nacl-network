@@ -1,13 +1,40 @@
 <html>
   <head>
   <script type="text/javascript">
+  var RunTests = function() {
+	  document.write("calling start_server on app<br>");
+	  var sockAddr = app.start_server();
+	  document.write("calling connect on sockAddr<br>");
+	  var conn = sockAddr.connect();
+	  var host = "18.208.0.160";
+	  var port = 7;
+	  document.write("connecting to " + host + ":" + port + "<br>");
+	  conn.connecthp(host, port);
+	  var msgs = ["Hello", "Hi", "Whatz up?", "Your mama.. codes better than you"];	  
+	  for(var i = 0; i < 10; ++i) {
+		  if(conn.isConnected()) {
+			  document.write("still connected!!!<br>");
+		  } else {
+			  document.write("disconnected<br>");
+			  break;
+		  } 
+		  var req = msgs[Math.floor(msgs.length*Math.random())]
+		  document.write("req = " + req + " <br>");
+		  var resp = conn.sendmsg(req);		  		  
+		  document.write("resp = " + resp + "<br>");
+	  }
+	  document.write("calling shutdown <br>");
+	  conn.shutdown();
+	  document.write("done...");
+  }
 //Before running tests we need to ensure the Native Client modules are loaded.
   var startupTimeout;
+  var app;
   var RunTestsAfterLoad = function() {
 	  // Initialize the selenium magic to failure here.
 	  if (app.__moduleReady) {
 	    clearTimeout(startupTimeout);
-	    EnqueueAndRunTests();
+	    RunTests();
 	  } else {
 	    if (app.__moduleReady == undefined) {
 	      alert('The Native Client plugin was unable to load');
@@ -16,7 +43,7 @@
 	    startupTimeout = setTimeout(RunTestsAfterLoad, 100);
 	  }
 	}
-  var Init = function(boxsize) {
+  var Init = function() {
 	  // Remember object to make access to the elements easier.
 	  app = document.getElementById('nacl_app');
 	  // Run the tests after ensuring loads have completed.
@@ -25,8 +52,8 @@
   </script>
   </head>
   <body onload="Init();">
-  <script type="text/javascript">  
-  document.write('<embed type="application/x-nacl-srpc" id="nacl_app" width="0" height="0" src="TCPEchoClient.nexe?a=' +Math.random()  + '" />');
-  </script>
+    
+  <embed type="application/x-nacl-srpc" id="nacl_app" width="0" height="0" src="TCPEchoClient.nexe" />
+  
   </body>
 </html>
