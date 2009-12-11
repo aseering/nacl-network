@@ -70,6 +70,10 @@ IMPLEMENTATION_SKELETON = """\
 /* this function was automagically generated */
 static int32_t %(name)sDecoder(struct NaClAppThread *natp) {
 %(members)s\
+#if %(syscalldefine)s >= NACL_sys_accept 
+  NaClLog(0, "nacl_syscall_handlers.c:%(name)sDecoder called\\n");
+  NaClLog(0, "calling %(name)s\\n");
+#endif  
   return %(name)s(natp%(arglist)s);
 }
 """
@@ -140,6 +144,7 @@ def PrintImplSkel(protos, ostr):
                'paramlist' : ParamList(alist[1:]),
                'arglist' : ArgList(alist[1:]),
                'members' : MemberList(name, alist[1:]),
+               'syscalldefine' : FunctionNameToSyscallDefine(name),
                }
     print >>ostr, IMPLEMENTATION_SKELETON % values
 
