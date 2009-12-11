@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <sys/mman.h>
+#include <errno.h>
 
 #include "native_client/src/trusted/service_runtime/linux/nacl_socks_client.h"
 #include "native_client/src/trusted/service_runtime/nacl_app_thread.h"
@@ -19,14 +20,8 @@ struct NaClRemoteServerPorts remoteServerPortsRingbuffer[NUM_REMOTE_SERVER_PORTS
 int rsprb_index = 0;
 
 
-int verifyServerPort(struct NaClRemoteServerPorts *p, short port, int protocol) {
-  if (protocol == IPPROTO_TCP) {
-    return ((p->tcp_ports[port/8] & 1 << (port % 8)) != 0) ? 0 : -1;
-  } else if (protocol == IPPROTO_UDP) {
-    return ((p->udp_ports[port/8] & 1 << (port % 8)) != 0) ? 0 : -1;
-  } else {
-    return (0 != 0);
-  }
+int verifyServerPort(struct NaClRemoteServerPorts *p, uint16_t port) {
+  return (((p->ports[port/8]) & (1 << (port % 8))) != 0);
 }
 
 
@@ -36,108 +31,138 @@ int NaClIsConnectionOk(const struct sockaddr *addr, unsigned char* hash) {
 
   int i, r;
 
-  unsigned int recvfrom_len;
-
   unsigned char buf[24];
-  char ret_buf[1024];
-  char itoa_buf[33];
-  int len;
+  char ret_buf[8200];
   struct NaClRemoteServerPorts *remote_ports;
 
-  struct addrinfo hints;
-  struct addrinfo *servinfo;
-  struct sockaddr from;
+  struct sockaddr_in to;
   int sockfd;
 
-
+  printf("Allocated memory.  Are we AF_INET?\n");
   if (addr->sa_family != AF_INET) {
     return -1; // We don't support anything != IPv4 at this time
   }
 
+  printf("Checking buffer\n");
   // See if we already know what to do with this IP
   for (i = 0; i < NUM_REMOTE_SERVER_PORTS; i++) {
+    printf("Buffer #%d\n", i);
     if (remoteServerPortsRingbuffer[i].ip == addr_in->sin_addr.s_addr) {
-      return verifyServerPort(&remoteServerPortsRingbuffer[i], addr_in->sin_port, IPPROTO_TCP);
+      return verifyServerPort(&remoteServerPortsRingbuffer[i], addr_in->sin_port);
     }
   }
 
   // We don't.  So, go fetch a response, and use it.
   // Somehow, we have to get our own hash.
   // For now, just hardcode a magic value.
-  
+  printf("Go make a hash-thing\n");
   MakeNaClHashReq(&buf[0], hash, 0);
   
+
+  printf("Setting up &from\n");
+  to.sin_port = htons(NACL_VALIDATE_SERVERPORT);
+  to.sin_family = AF_INET;
+  to.sin_addr = addr_in->sin_addr;
+  /*printf("Set up some in-memory data structures\n");
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_DGRAM;
   
-  sprintf(&itoa_buf[0], "%d", NACL_VALIDATE_SERVERPORT);
+  printf("Getaddrinfo\n");
+  sprintf(&itoa_buf[0], "%d", NACL_VALDATE_SERVERPORT);
   if ((r = getaddrinfo(NULL, &itoa_buf[0], &hints, &servinfo)) != 0) {
     return -1;
-  }
+    }*/
   
-  if ((sockfd = socket(servinfo[0].ai_family, servinfo[0].ai_socktype, servinfo[0].ai_protocol)) == -1)  {
+  
+  printf("socket\n");
+  if ((sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)  {
+    printf("socket value: %d\n", sockfd);
     return sockfd;
   }
+
+  if ((r = connect(sockfd, &to, sizeof(to))) < 0) {
+    printf("Connect failed: %d (%s)\n", r, strerror(errno));
+    return r;
+  }
   
-  sendto(sockfd, &buf, sizeof(buf), 0, addr, sizeof(struct sockaddr_storage));
-  recvfrom_len = sizeof(struct sockaddr);
-  if ((len = recvfrom(sockfd, &ret_buf, sizeof(ret_buf), 0, &from, &recvfrom_len)) < 0) {
+  printf("send\n");
+  if ((r = send(sockfd, &buf, sizeof(buf), 0)) < 0) {
     return -1;
   }
 
+  printf("recv\n");
+  memset(&ret_buf[0], 0, sizeof(ret_buf));
+  if ((r = recv(sockfd, &ret_buf[0], sizeof(ret_buf), 0)) < 0) {
+    return r;
+  }
+  
+  printf("close\n");
   close(sockfd);
 
-  if ((r = ParseNaClHashResp(&ret_buf[0], len, addr_in->sin_addr.s_addr, &remote_ports, 0)) != 0) {
+  printf("ParseNaClHashResp\n");
+  if ((r = ParseNaClHashResp(&ret_buf[0], sizeof(ret_buf), addr_in->sin_addr.s_addr, &remote_ports, 0)) != 0) {
     return r;
   }
 
-  // hm...  We don't know here whether this request is for UDP or TCP (/etc).
-  // For now, assume TCP.
-  return verifyServerPort(remote_ports, addr_in->sin_port, IPPROTO_TCP);
+  printf("verifyServerPort and return\n");
+  return verifyServerPort(remote_ports, addr_in->sin_port);
 }
 
 
 /*Given a hash & nonce, fill in the buf with the message that needs to be sent to server*/
 /*The buffer must have a length of 24 bytes.  The response will be 24 bytes long.*/
-void MakeNaClHashReq(unsigned char *buf, unsigned char *hash, int nonce) {
+void MakeNaClHashReq(unsigned char *buf, unsigned char *hash, uint32_t nonce) {
   memcpy(buf, hash, 20);
   memcpy(buf+20, &nonce, 4);
 }
 
 /*Given the response from the server, fills in and sets ports to point to the NaClRemoteServerPorts struct*/
 /*returns 0 on success nonzero on error*/
-int ParseNaClHashResp(const char* buf, int buf_len, unsigned int server_ip, struct NaClRemoteServerPorts **ports, int nonce) {
+int ParseNaClHashResp(const char* buf, uint32_t buf_len, uint32_t server_ip, struct NaClRemoteServerPorts **ports, uint32_t nonce) {
   /* Format is as follows:
    * 
    * First 32 bits: success code (4-byte integer, in network order) -- 0 indicates success
-   * Next 65536 bits: Bitmask of allowed TCP ports
-   * Next 65535 bits: Bitmask of allowed UDP ports
+   * Next 32 bits: Nonce that we sent to the server initially
+   * Next 65536 bits: Bitmask of allowed ports
    */
-  int *int_ptr;
-  int success;
+  uint32_t *int_ptr;
+  uint32_t success;
+  uint32_t new_nonce;
   struct NaClRemoteServerPorts *p;
 
-  UNREFERENCED_PARAMETER(ports);
-  UNREFERENCED_PARAMETER(nonce);
+  printf("Allocated and UNREF\n");
 
-  if (buf_len < 4 + 2 * 8192) {
+  printf("Is buf_len is too small?\n");
+  if (buf_len < 8200) {
+    printf("Yep: %d < %d\n", buf_len, 8200);
     return -1; // We have to be able to parse out at least our three integers of interest
   }
 
-  int_ptr = (int*)buf;
-  success = int_ptr[0];
+  int_ptr = (uint32_t*)buf;
+  success = ntohl(int_ptr[0]);
+  new_nonce = ntohl(int_ptr[1]);
 
   if (success != 0) {
+    printf("We fail: %d\n", success);
     return success;
   }
 
+  if (new_nonce != nonce) {
+    printf("Invalid nonce!  Failing...  (0x%x, 0x%x)\n", nonce, new_nonce);
+    return -1;
+  }
+
+  printf("remoteServerPortsRingbuffer\n");
   p = &remoteServerPortsRingbuffer[rsprb_index++ % NUM_REMOTE_SERVER_PORTS];
 
+  printf("Some memory tweakage\n");
   p->ip = server_ip;
-  memcpy(&p->tcp_ports, buf + 4, 8192);
-  memcpy(&p->udp_ports, buf + 4 + 8192, 8192);
+  memcpy(&p->ports[0], buf + 8, 8192);
 
+  *ports = p;
+
+  printf("Done\n");
   return 0;
 }
 

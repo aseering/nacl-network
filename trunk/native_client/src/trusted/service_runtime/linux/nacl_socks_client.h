@@ -8,16 +8,15 @@
 /*Struct indicating what ports on a given IP address we are allowed to connect to*/
 struct NaClRemoteServerPorts {
   unsigned int ip;
-  unsigned char udp_ports[8192];
-  unsigned char tcp_ports[8192];
+  unsigned char ports[8192];
 };
 
 /*Given a hash & nonce, fill in the buf with the message that needs to be sent to server*/
-void MakeNaClHashReq(unsigned char *buf, unsigned char *hash, int nonce);
+void MakeNaClHashReq(unsigned char *buf, unsigned char *hash, uint32_t nonce);
 
 /*Given the response from the server, fills in udpPorts, tcpPorts, sets global and nonce*/
 /*returns 0 on success nonzero on error*/
-int ParseNaClHashResp(const char* buf, int buf_len, unsigned int server_ip, struct NaClRemoteServerPorts **ports, int nonce);
+int ParseNaClHashResp(const char* buf, uint32_t buf_len, uint32_t server_ip, struct NaClRemoteServerPorts **ports, uint32_t nonce);
 
 /*Given the data of nexe, create a hash*/
 /*"hash" must point to a 20-bytes buffer into which the hash will be written.*/
