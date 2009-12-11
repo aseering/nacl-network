@@ -625,13 +625,9 @@ int32_t NaClSysBind(struct NaClAppThread  *natp, int fd,
 int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 		const struct sockaddr* addr, socklen_t len) {
 	int r;
-	char buf[100];
-
 
 	struct sockaddr_in *addr_in = (struct sockaddr_in *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, len); /* Echo server address */
 
-	inet_ntop(AF_INET, &addr_in->sin_addr, &buf[0], sizeof(buf));
-	
 	if (kNaClBadAddress == (uintptr_t)addr_in) {
 	  return -NACL_ABI_EFAULT;	 
 	}
