@@ -616,10 +616,14 @@ int32_t NaClSysAccept(struct NaClAppThread  *natp, int fd, struct sockaddr* addr
 int32_t NaClSysBind(struct NaClAppThread  *natp, int fd,
 		const struct sockaddr * addr, socklen_t len) {
 	int r;
-	if ((r = NaClValidateIp(natp, addr)) != 0) {
+        struct sockaddr *newaddr = (struct sockaddr *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, len);
+	if (kNaClBadAddress == (uintptr_t)addr) {
+	  return -NACL_ABI_EFAULT;	 
+	}
+	if ((r = NaClValidateIp(natp, newaddr)) != 0) {
 	  return r;
 	}
-	return bind(fd, addr, len);
+	return bind(fd, newaddr, len);
 }
  
 int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
@@ -674,8 +678,11 @@ int32_t NaClSysListen(struct NaClAppThread  *natp, int fd, int n) {
 
 int32_t NaClSysRecv(struct NaClAppThread  *natp, int fd, void *buf,
 		size_t n, int flags) {
-	UNREFERENCED_PARAMETER(natp);
-	return recv(fd, buf, n, flags);
+        void *newbuf = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) buf, n);
+	if (kNaClBadAddress == (uintptr_t)newbuf) {
+	  return -NACL_ABI_EFAULT;	 
+	}
+	return recv(fd, newbuf, n, flags);
 }
 
 int32_t NaClSysRecvfrom(struct NaClAppThread  *natp, int fd, void *buf, size_t n,
@@ -690,21 +697,30 @@ int32_t NaClSysRecvfrom(struct NaClAppThread  *natp, int fd, void *buf, size_t n
 
 int32_t NaClSysRecvmsg(struct NaClAppThread  *natp, int fd,
 		struct msghdr *message, int flags) {
-	UNREFERENCED_PARAMETER(natp);
-	return recvmsg(fd, message, flags);
+        struct msghdr *newmessage = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) message, sizeof(struct msghdr));
+	if (kNaClBadAddress == (uintptr_t)newmessage) {
+	  return -NACL_ABI_EFAULT;	 
+	}
+	return recvmsg(fd, newmessage, flags);
 }
 
 int32_t NaClSysSend(struct NaClAppThread  *natp, int fd,
 		const void *buf, size_t n, int flags) {
-	UNREFERENCED_PARAMETER(natp);
-	return send(fd, buf, n, flags);
+        void *newbuf = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) buf, n);
+	if (kNaClBadAddress == (uintptr_t)newbuf) {
+	  return -NACL_ABI_EFAULT;	 
+	}
+	return send(fd, newbuf, n, flags);
 }
 
 int32_t NaClSysSendMsg(struct NaClAppThread  *natp, int fd,
 		const struct msghdr *message,
 		int flags) {
-	UNREFERENCED_PARAMETER(natp);
-	return sendmsg(fd, message, flags);
+        void *newmessage = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) message, sizeof(struct msghdr));
+	if (kNaClBadAddress == (uintptr_t)newmessage) {
+	  return -NACL_ABI_EFAULT;	 
+	}
+	return sendmsg(fd, newmessage, flags);
 }
 
 int32_t NaClSysSendto(struct NaClAppThread  *natp, int fd,
@@ -712,17 +728,23 @@ int32_t NaClSysSendto(struct NaClAppThread  *natp, int fd,
 	       int flags, const struct sockaddr* addr,
 	       socklen_t addr_len) {
 	int r;
-	UNREFERENCED_PARAMETER(natp);
+        void *newbuf = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) buf, n);
+	if (kNaClBadAddress == (uintptr_t)newbuf) {
+	  return -NACL_ABI_EFAULT;	 
+	}
 	if ((r = NaClValidateIp(natp, addr)) != 0) {
 	  return r;
 	}
-	return sendto(fd, buf, n, flags, addr, addr_len);
+	return sendto(fd, newbuf, n, flags, addr, addr_len);
 }
 
 int32_t NaClSysSetsockopt(struct NaClAppThread  *natp, int fd, int level,
 		int optname, const void *optval, socklen_t optlen) {
-	UNREFERENCED_PARAMETER(natp);
-	return setsockopt(fd, level, optname, optval, optlen);
+        void *newoptval = (void *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) optval, optlen);
+	if (kNaClBadAddress == (uintptr_t)newoptval) {
+	  return -NACL_ABI_EFAULT;	 
+	}
+	return setsockopt(fd, level, optname, newoptval, optlen);
 }
 
 int32_t NaClSysShutdown(struct NaClAppThread  *natp, int fd, int how) {
