@@ -631,27 +631,17 @@ int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 	struct sockaddr_in *addr_in = (struct sockaddr_in *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, len); /* Echo server address */
 
 	inet_ntop(AF_INET, &addr_in->sin_addr, &buf[0], sizeof(buf));
-
-	printf("Addr: (0x%x 0x%x) 0x%x '%s':0x%hx\tLen: %d\n", AF_INET, addr_in->sin_family, (uint32_t)addr, &buf[0], addr_in->sin_port, (uint32_t)len);
 	
 	if (kNaClBadAddress == (uintptr_t)addr_in) {
 	  return -NACL_ABI_EFAULT;	 
 	}
 
-	printf("0x%x", (unsigned int)addr_in);
-	printf("Testing 1 2 3...\n");
 	if ((r = NaClValidateIp(natp, (struct sockaddr *)addr_in)) != 0) {
-	  printf("Validation failing...: %d\n", r);
 	  return r;
 	}
-	printf("A\n");
+
 	r = connect(fd, (struct sockaddr *)addr_in, len);
 
-	printf("B\n");
-	if (r != 0)
-	  printf("connect failed...:  %s (%d) (IP %s)\n", strerror(errno), errno, inet_ntoa(addr_in->sin_addr));
-
-	printf("returning from connect()\n");
 	return r;
 }
 
