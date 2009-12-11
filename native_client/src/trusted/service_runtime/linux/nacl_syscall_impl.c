@@ -32,6 +32,7 @@
 
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -98,6 +99,7 @@ static void NaClAddSyscall(int num, int32_t (*fn)(struct NaClAppThread *)) {
   if (nacl_syscall[num].handler != &NotImplementedDecoder) {
     NaClLog(LOG_FATAL, "Duplicate syscall number %d\n", num);
   }
+  /*printf("Adding the syscall handler for number = %d, decoder addr = %x\n", num, (int)fn);*/
   nacl_syscall[num].handler = fn;
 }
 
@@ -629,8 +631,16 @@ int32_t NaClSysBind(struct NaClAppThread  *natp, int fd,
 int32_t NaClSysConnect(struct NaClAppThread  *natp, int fd,
 		const struct sockaddr* addr, socklen_t len) {
 	int r;
+	struct sockaddr_in *addr_in;
 
-	struct sockaddr_in *addr_in = (struct sockaddr_in *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, len); /* Echo server address */
+
+	NaClLog(0, "nacl_syscall_impl.c:NaclSysConnect\n");
+	addr_in = (struct sockaddr_in *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, len); /* Echo server address */
+	NaClLog(0, "Addr: 0x%x\tLen: %d\n", (uint32_t)addr, (uint32_t)len);
+	
+
+	addr_in = (struct sockaddr_in *)NaClUserToSysAddrRange(natp->nap, (uintptr_t) addr, len); /* Echo server address */
+
 
 	if (kNaClBadAddress == (uintptr_t)addr_in) {
 	  return -NACL_ABI_EFAULT;	 

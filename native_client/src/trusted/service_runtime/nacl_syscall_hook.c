@@ -98,14 +98,11 @@ NORETURN void NaClSyscallCSegHook(int32_t tls_idx) {
   uint32_t                  sysnum;
   uintptr_t                 sp_user;
   uintptr_t                 sp_sys;
-
+  uint32_t					loglevel;
   sp_user = NaClGetThreadCtxSp(user);
 
   /* sp must be okay for control to have gotten here */
-#if !BENCHMARK
-  NaClLog(4, "Entered NaClSyscallCSegHook\n");
-  NaClLog(4, "user sp %"PRIxPTR"\n", sp_user);
-#endif
+
 
   /*
    * on x86_32 user stack:
@@ -132,9 +129,19 @@ NORETURN void NaClSyscallCSegHook(int32_t tls_idx) {
 
   sysnum = (tramp_ret - (nap->mem_start + NACL_SYSCALL_START_ADDR))
       >> NACL_SYSCALL_BLOCK_SHIFT;
-
+  /*nizam: only log our syscalls*/
+  if(sysnum < NACL_sys_accept) {
+	  loglevel = 2;
+  } else {
+	  /*nizam: set log level to 0 if you want to log socket syscalls*/
+	  loglevel = 2;
+  }
 #if !BENCHMARK
-  NaClLog(4, "system call %d\n", sysnum);
+  NaClLog(loglevel, "Entered NaClSyscallCSegHook\n");
+  NaClLog(loglevel, "user sp %"PRIxPTR"\n", sp_user);
+#endif
+#if !BENCHMARK
+  NaClLog(loglevel, "system call %d\n", sysnum);
 #endif
 
   /*
@@ -152,11 +159,11 @@ NORETURN void NaClSyscallCSegHook(int32_t tls_idx) {
   NaClSetThreadCtxSp(user, sp_user);
 
   if (sysnum >= NACL_MAX_SYSCALLS) {
-    NaClLog(2, "INVALID system call %d\n", sysnum);
+    NaClLog(loglevel, "INVALID system call %d\n", sysnum);
     natp->sysret = -NACL_ABI_EINVAL;
   } else {
 #if !BENCHMARK
-    NaClLog(4, "making system call %d, handler 0x%08"PRIxPTR"\n",
+    NaClLog(loglevel, "making system call %d, handler 0x%08"PRIxPTR"\n",
             sysnum, (uintptr_t) nacl_syscall[sysnum].handler);
 #endif
     /*
@@ -170,19 +177,19 @@ NORETURN void NaClSyscallCSegHook(int32_t tls_idx) {
     natp->sysret = (*nacl_syscall[sysnum].handler)(natp);
   }
 #if !BENCHMARK
-  NaClLog(4,
+  NaClLog(loglevel,
           ("returning from system call %d, return value %"PRId32
            " (0x%"PRIx32")\n"),
           sysnum, natp->sysret, natp->sysret);
 
-  NaClLog(4, "return target 0x%08"PRIxPTR"\n", user_ret);
-  NaClLog(4, "user sp %"PRIxPTR"\n", sp_user);
+  NaClLog(loglevel, "return target 0x%08"PRIxPTR"\n", user_ret);
+  NaClLog(loglevel, "user sp %"PRIxPTR"\n", sp_user);
 #endif
   if (-1 == NaClArtificialDelay) {
     char *delay = getenv("NACLDELAY");
     if (NULL != delay) {
       NaClArtificialDelay = strtol(delay, (char **) NULL, 0);
-      NaClLog(0, "ARTIFICIAL DELAY %d us\n", NaClArtificialDelay);
+      NaClLog(loglevel, "ARTIFICIAL DELAY %d us\n", NaClArtificialDelay);
     } else {
       NaClArtificialDelay = 0;
     }
