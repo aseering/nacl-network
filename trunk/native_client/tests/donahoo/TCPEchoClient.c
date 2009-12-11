@@ -4,10 +4,13 @@
 #include <stdlib.h>     /* for atoi() and exit() */
 #include <string.h>     /* for memset() */
 #include <unistd.h>     /* for close() */
+#include <sys/nacl_syscalls.h>
+#include <fcntl.h>
 
 #define RCVBUFSIZE 32   /* Size of receive buffer */
 
 void DieWithError(char *errorMessage);  /* Error handling function */
+
 
 int main(int argc, char *argv[])
 {
@@ -18,13 +21,13 @@ int main(int argc, char *argv[])
     char *echoString;                /* String to send to echo server */
     char echoBuffer[RCVBUFSIZE];     /* Buffer for echo string */
     unsigned int echoStringLen;      /* Length of string to echo */
-    int bytesRcvd, totalBytesRcvd;   /* Bytes read in single recv() 
+    int bytesRcvd, totalBytesRcvd, fd;   /* Bytes read in single recv()
                                         and total bytes read */
-
     if ((argc < 3) || (argc > 4))    /* Test for correct number of arguments */
     {
        /*fprintf(stderr, "Usage: %s <Server IP> <Echo Word> [<Echo Port>]\n", argv[0]);*/
        servIP = "127.0.0.1";
+       /*servIP = "18.208.0.160";*/
        echoString = "Hello NaCl World!";
     } else {
 
@@ -34,9 +37,13 @@ int main(int argc, char *argv[])
 
     if (argc == 4)
         echoServPort = atoi(argv[3]); /* Use given port, if any */
-    else
-        echoServPort = 7000;  /* 7 is the well-known port for the echo service */
-
+    else {
+        /*echoServPort = 7000;*/
+    	echoServPort = 7;
+    }
+    fd = open("/tmp/test", O_WRONLY);
+    close(fd);
+    printf("file descriptor fd = %d\n", fd);
     /* Create a reliable, stream socket using TCP */
     if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
         DieWithError("socket() failed");
@@ -45,11 +52,14 @@ int main(int argc, char *argv[])
     memset(&echoServAddr, 0, sizeof(echoServAddr));     /* Zero out structure */
     echoServAddr.sin_family      = AF_INET;             /* Internet address family */
     echoServAddr.sin_addr.s_addr = inet_addr(servIP);   /* Server IP address */
+    printf("inet_addr(servIP) = %08x\n", inet_addr(servIP));
+    inet_pton(AF_INET, servIP, &echoServAddr.sin_addr.s_addr);
+    printf("after inet_pton, s_addr = %08x\n", echoServAddr.sin_addr.s_addr);
     echoServAddr.sin_port        = htons(echoServPort); /* Server port */
 
     /* Establish the connection to the echo server */
     if (connect(sock, (struct sockaddr *) &echoServAddr, sizeof(echoServAddr)) < 0)
-        DieWithError("attempt to connect() failed");
+        DieWithError("12876th try to connect() failed\n");
 
     echoStringLen = strlen(echoString);          /* Determine input length */
 
@@ -76,3 +86,4 @@ int main(int argc, char *argv[])
     close(sock);
     exit(0);
 }
+

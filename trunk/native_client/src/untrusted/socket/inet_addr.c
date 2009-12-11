@@ -74,8 +74,9 @@ static const char rcsid[] = "$BINDId: inet_addr.c,v 8.11 1999/10/13 16:39:25 vix
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
 #include <ctype.h>
+/*nizam: add nacl-endian-ness defs, htonl doesn't work properly otherwise.*/
+#include <machine/endian.h>
 
 #ifdef _LIBC
 # include <endian.h>
@@ -208,8 +209,12 @@ __inet_aton(const char *cp, struct in_addr *addr)
 	if (val > max[pp - res.bytes])
 	  goto ret_0;
 
-	if (addr != NULL)
+	if (addr != NULL) {
+		/*printf("inet_addr.c: res.word = %08lx\n", res.word);
+		printf("inet_addr.c: val = %08x\n", val);
+		printf("inet_addr.c: htonl(val) = %08x\n",  htonl (val));*/
 		addr->s_addr = res.word | htonl (val);
+	}
 
 #ifdef _LIBC
 	__set_errno (saved_errno);

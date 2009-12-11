@@ -91,7 +91,9 @@ int test_open_conn() {
     /* Construct the server address structure */
     memset(&echoServAddr, 0, sizeof(echoServAddr));     /* Zero out structure */
     echoServAddr.sin_family      = AF_INET;             /* Internet address family */
+
     inet_pton(AF_INET, servIP, &echoServAddr.sin_addr.s_addr);   /* Server IP address */
+
     echoServAddr.sin_port        = htons(echoServPort); /* Server port */
 
     /* Establish the connection to the echo server */
