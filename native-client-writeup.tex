@@ -178,9 +178,17 @@ firefox
 "http://localhost/native_client/scons-out/nacl-x86-32/staging/echo.html"
 \end{verbatim}
 
+Alternatively, if you are running Linux (particularly Ubuntu Jaunty with
+Firefox 3.0, though other versions may work), you can try to install by
+un-tarring ``native-client-plugin-linux.tar.gz'' from the root of the code
+repository, into ``~/.mozilla/plugins/''.  (The tarball outputs all of the
+plugin files directly, it doesn't create a containing folder.)  Note that the
+plugin may require you to install libSDL.
+
 Note that the test above requires that you are serving the Native Client
 repository over HTTP from your local computer.  This requirement is imposed
-by Native Client's security model.  Native Client comes bundled with a
+by Native Client's security model, which is currently very conservative while
+Native Client is under development. Native Client comes bundled with a
 Python-based web server that you can use for this purpose, if you are not
 already running a Web server; its usage is documented at the link above.
 
