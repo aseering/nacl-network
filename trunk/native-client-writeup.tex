@@ -20,6 +20,50 @@ private firewalled network services from being exposed to an attacker on the
 other side of the firewall.
 \end{abstract}
 
+\section{Native Client System Calls}
+
+
+Native Client (NaCl) is an open source browser plugin project spearheaded by
+Google. Its aim is to give the web applications the performance of native
+applications without comprimising safety. It provides a sandbox that runs x86
+code with certain restrictions. These restrictions guarantee that the x86
+modules can be disassembled almost entirely, the module's control flow is
+predictable, and only the allowed system calls are performed. Our work is
+closely related to system calls, and in order to understand why our
+modifications do not break the security of NaCl, it is important to understand
+how NaCl prevents direct access to system calls.
+
+In order to prevent the untrusted x86 module from accessing system calls
+directly, NaCl makes use of x86 memory segments and page protections. Upon
+loading, the NaCl module is allocated a 256 MB memory region. The first 64 KBs
+of this region is initialized by NaCl's service runtime. The first 4KBs of this
+64KBs are reserved space to detect NULL pointers. The remaining 60KB contains
+the code for the trusted trampoline call gate and springboard return gate.
+Following this 64KB lies the text of the x86 module's binary. Segment registers are set to
+constrain data accesses from this region to memory with higher addresses. The
+trampoline and springboard code region is allowed to access other trusted code
+because they are placed by NaCl's service runtime. NaCl applications make
+system calls through this trampoline and springboard code region.
+
+There are two types of modifications to NaCl source code that we did: adding
+new system calls that are wrappers to POSIX socket system calls and adding
+standard socket utility functions like  \texttt{htons, inet\_pton, inet\_addr} 
+etc that only do computation to untrusted code's standard library. Assuming
+that NaCl's trampoline/springboard mechanism works correctly, this means that
+attackers can not access the socket system calls directly. We discuss our
+threat model and how we prevent attackers from abusing the network in the next
+section.
+
+\section{Threat Model}
+
+Our restrictions to NaCl application's access to network are stricter than
+browser's restrictions to javascript applications. By means of an out-of-band
+handshake, we require that the other party expresses its willingness to
+communicate with the NaCl application before establishing any connection. This
+prevents any DDOS attacks or unauthorized accesses to internal network
+services. This handshake happens outside the sandbox, therefore can not be
+bypassed by the untrusted code.
+
 \section{API}
 
 The POSIX Networking API is replicated using Native Client Syscalls.  The
