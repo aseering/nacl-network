@@ -45,7 +45,11 @@
 
 #define NACL_THREAD_MAX     LDT_ENTRIES
 
-#define NACL_MAX_ADDR_BITS  (8 + 20)
+/*#define NACL_MAX_ADDR_BITS  (8 + 20)*/
+/*nizam: NACL_MAX_ADDR_BITS directly effects the memory allocation
+  NaCl allocates 256 MB for each module by default, i reduce
+  it to 32 MB by removing 3 bits from NACL_MAX_ADDR_BITS*/
+#define NACL_MAX_ADDR_BITS  8+17
 #define NACL_NOOP_OPCODE    0x90
 #define NACL_HALT_OPCODE    0xf4
 #define NACL_HALT_LEN       1           /* length of halt instruction */
