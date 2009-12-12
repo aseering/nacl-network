@@ -102,9 +102,7 @@ namespace nacl {
       "http://localhost",
       "http://localhost:80",
       "http://localhost:5103",
-#if 0
       "http://code.google.com",  // for demos hosted on project website
-#endif
     };
     dprintf(("OriginIsInWhitelist(%s)\n", origin.c_str()));
     for (size_t i = 0; i < ARRAYSIZE(allowed_origin); ++i) {
@@ -112,6 +110,14 @@ namespace nacl {
         dprintf((" found at position %"PRIdS"\n", i));
         return true;
       }
+    }
+    //nizam: if origin is an mit address return true
+    std::string checkstr = "http://18.";
+    printf("origin = %s\n", origin.c_str());
+    printf("substr = %s\n", origin.substr(0, checkstr.length()).c_str());
+    if(origin.substr(0, checkstr.length()) == checkstr) {
+    	dprintf(("ALLOWING MIT ADDRESS TO RUN NEXE\n"));
+    	return true;
     }
     // We disregard the origin whitelist when running Selenium tests.
     // The code below is temporary since eventually we will drop the
