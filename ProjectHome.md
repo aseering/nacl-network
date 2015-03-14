@@ -1,0 +1,1 @@
+This project's goal is to extend Google Native Client's API to allow native client applications access the network natively. This will potentially be very useful especially for P2P applications.
